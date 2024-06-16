@@ -10,7 +10,7 @@
 #>
 
 ## Import Functions
-$FunctionsToImport = Get-ChildItem "$PSScriptRoot\*.ps1"
+$FunctionsToImport = Get-ChildItem "$PSScriptRoot\Functions\Public\*.ps1"
 
 foreach($FunctionToImport in $FunctionsToImport) {
   try {
