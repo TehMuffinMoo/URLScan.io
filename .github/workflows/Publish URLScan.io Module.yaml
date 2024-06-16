@@ -28,7 +28,7 @@ jobs:
           Copy-Item "./Modules/POSH-URLScanIO.ps1" "./Modules/URLScan.io/POSH-URLScanIO.psm1" -Force
 
           Write-Host "Testing Module Manifest.."
-          $Module = Test-ModuleManifest -Path "./Modules/URLScan.io/POSH-URLScanIO.psm1"
+          $Module = Test-ModuleManifest -Path "./Modules/URLScan.io/POSH-URLScanIO.psd1"
 
           $CustomModuleVersion = "${{ inputs.customVersion }}"
           if ($CustomModuleVersion -eq "true") {
