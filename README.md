@@ -20,7 +20,7 @@
   <a href="https://www.powershellgallery.com/packages/URLScan.io"><img src="https://img.shields.io/powershellgallery/p/URLScan.io?label=Supported Platforms&color=%236600bf"></a>
   <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FTehMuffinMoo%2FURLScan.io%2Fdev%2Fdocs%2Fmanifest.json&query=%24.Count&label=Available%20Functions&color=orange"</img>
   <a href="https://github.com/TehMuffinMoo/URLScan.io/releases"><img src="https://img.shields.io/github/release-date/tehmuffinmoo/URLScan.io?label=Latest%20Release"></a>
-  <a href="https://PSURLScanio.readthedocs.io"><img src="https://img.shields.io/readthedocs/PSURLScanio?label=Docs"></a>
+  <a href="https://psurlscanio.readthedocs.io"><img src="https://img.shields.io/readthedocs/psurlscanio?label=Docs"></a>
 </p>
 
 <h4 align="center">A series of PowerShell Cmdlets used to interact with the InfoBlox BloxOne APIs.</h4>
