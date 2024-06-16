@@ -25,10 +25,10 @@ jobs:
         shell: pwsh
         run: |
           Write-Host "Updating changes to Module.."
-          Copy-Item "./Modules/POSH-URLScanIO.ps1" "./Modules/URLScan.io/POSH-URLScanIO.psm1" -Force
+          Copy-Item "./Modules/URLScan.io.ps1" "./Modules/URLScan.io/URLScan.io.psm1" -Force
 
           Write-Host "Testing Module Manifest.."
-          $Module = Test-ModuleManifest -Path "./Modules/URLScan.io/POSH-URLScanIO.psd1"
+          $Module = Test-ModuleManifest -Path "./Modules/URLScan.io/URLScan.io.psd1"
 
           $CustomModuleVersion = "${{ inputs.customVersion }}"
           if ($CustomModuleVersion -eq "true") {
@@ -46,11 +46,11 @@ jobs:
 
           ## Export Functions
           Write-Host "Updating Module Manifest to v$ModuleVersion.."
-          Update-ModuleManifest "./Modules/URLScan.io/POSH-URLScanIO.psd1" -ModuleVersion $ModuleVersion -FunctionsToExport ($(@($PublicFunctions) | Select-Object -ExpandProperty BaseName)) -AliasesToExport '*' -ReleaseNotes "https://posh-urlscanio.readthedocs.io/en/latest/Change%20Log/"
+          Update-ModuleManifest "./Modules/URLScan.io/URLScan.io.psd1" -ModuleVersion $ModuleVersion -FunctionsToExport ($(@($PublicFunctions) | Select-Object -ExpandProperty BaseName)) -AliasesToExport '*' -ReleaseNotes "https://URLScan.io.readthedocs.io/en/latest/Change%20Log/"
 
           ## Export Manifest info to JSON file
           Write-Host "Counting functions.."
-          $Module = Test-ModuleManifest -Path "./Modules/URLScan.io/POSH-URLScanIO.psd1" | Select-Object Name,@{name="Version";expression={$_.Version.ToString()}},Description,Author,ProjectUri,LicenseUri,ReleaseNotes,CompanyName,Copyright,ExportedFunctions
+          $Module = Test-ModuleManifest -Path "./Modules/URLScan.io/URLScan.io.psd1" | Select-Object Name,@{name="Version";expression={$_.Version.ToString()}},Description,Author,ProjectUri,LicenseUri,ReleaseNotes,CompanyName,Copyright,ExportedFunctions
           $Module | Add-Member -MemberType NoteProperty -Name "Count" -Value $Module.ExportedFunctions.Count
           $Module | Select-Object -ExcludeProperty ExportedFunctions | ConvertTo-Json -Depth 5 | Out-File ./docs/manifest.json -Force
 
@@ -82,13 +82,13 @@ jobs:
           New-Item -ItemType Directory './docs-temp'
 
           Write-Host "Importing URLScan.io Module.."
-          Import-Module './Modules/URLScan.io/POSH-URLScanIO.psd1' -Force -DisableNameChecking
+          Import-Module './Modules/URLScan.io/URLScan.io.psd1' -Force -DisableNameChecking
 
           Write-Host "Obtaining list of excluded docs.."
           $ExcludedDocs = Import-Csv ./docs/exclusions.csv -Header 'doc'
 
           Write-Host "Updating documentation.."
-          $DocumentationVersion = (Test-ModuleManifest -Path "./Modules/URLScan.io/POSH-URLScanIO.psd1").Version.ToString()
+          $DocumentationVersion = (Test-ModuleManifest -Path "./Modules/URLScan.io/URLScan.io.psd1").Version.ToString()
           New-MarkdownHelp -Module URLScan.io -OutputFolder './docs-temp' -HelpVersion $($DocumentationVersion) -Force
 
           Write-Host "Cleaning up old documentation.."
@@ -114,7 +114,7 @@ jobs:
           $Branch = git rev-parse --abbrev-ref HEAD
           Write-Output ("Branch=$($Branch)") | Out-File -FilePath $ENV:GITHUB_ENV -Encoding utf8 -Append
 
-          $Manifest = Test-ModuleManifest -Path "./Modules/URLScan.io/POSH-URLScanIO.psd1"
+          $Manifest = Test-ModuleManifest -Path "./Modules/URLScan.io/URLScan.io.psd1"
           if ($($Manifest).Version -gt $(Find-Module 'URLScan.io').Version) {
             if ($Branch -eq "main") {
               Write-Host "Publishing v$($Manifest.Version.ToString()).."
