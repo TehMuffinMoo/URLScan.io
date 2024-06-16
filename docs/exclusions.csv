@@ -1,2 +1,3 @@
-build.json
+manifest.json
 exclusions.csv
+.readthedocs.yaml
