@@ -46,7 +46,7 @@ jobs:
 
           ## Export Functions
           Write-Host "Updating Module Manifest to v$ModuleVersion.."
-          Update-ModuleManifest "./Modules/URLScan.io/POSH-URLScanIO.psd1" -ModuleVersion $ModuleVersion -FunctionsToExport ($(@($PublicFunctions + $PrivateFunctions) | Select-Object -ExpandProperty BaseName) -AliasesToExport '*' -ReleaseNotes "https://posh-urlscanio.readthedocs.io/en/latest/Change%20Log/"
+          Update-ModuleManifest "./Modules/URLScan.io/POSH-URLScanIO.psd1" -ModuleVersion $ModuleVersion -FunctionsToExport ($(@($PublicFunctions + $PrivateFunctions) | Select-Object -ExpandProperty BaseName)) -AliasesToExport '*' -ReleaseNotes "https://posh-urlscanio.readthedocs.io/en/latest/Change%20Log/"
 
           ## Export Manifest info to JSON file
           Write-Host "Counting functions.."
