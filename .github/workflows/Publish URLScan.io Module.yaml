@@ -46,7 +46,7 @@ jobs:
 
           ## Export Functions
           Write-Host "Updating Module Manifest to v$ModuleVersion.."
-          Update-ModuleManifest "./Modules/URLScan.io/URLScan.io.psd1" -ModuleVersion $ModuleVersion -FunctionsToExport ($(@($PublicFunctions) | Select-Object -ExpandProperty BaseName)) -AliasesToExport '*' -ReleaseNotes "https://URLScan.io.readthedocs.io/en/latest/Change%20Log/"
+          Update-ModuleManifest "./Modules/URLScan.io/URLScan.io.psd1" -ModuleVersion $ModuleVersion -FunctionsToExport ($(@($PublicFunctions) | Select-Object -ExpandProperty BaseName)) -AliasesToExport '*' -ReleaseNotes "https://PSURLScanio.readthedocs.io/en/latest/Change%20Log/"
 
           ## Export Manifest info to JSON file
           Write-Host "Counting functions.."
@@ -115,7 +115,7 @@ jobs:
           Write-Output ("Branch=$($Branch)") | Out-File -FilePath $ENV:GITHUB_ENV -Encoding utf8 -Append
 
           $Manifest = Test-ModuleManifest -Path "./Modules/URLScan.io/URLScan.io.psd1"
-          # if ($($Manifest).Version -gt $(Find-Module 'URLScan.io').Version) {
+          if ($($Manifest).Version -gt $(Find-Module 'URLScan.io').Version) {
             if ($Branch -eq "main") {
               Write-Host "Publishing v$($Manifest.Version.ToString()).."
               Copy-Item './Modules/URLScan.io' '/home/runner/.local/share/powershell/Modules/' -Recurse
@@ -125,10 +125,10 @@ jobs:
               Write-Host "Running on $($Branch) branch. Skipping publishing.."
               Write-Output "ReleaseUpdated=false" | Out-File -FilePath $ENV:GITHUB_ENV -Encoding utf8 -Append
             }
-          # } else {
-          #   Write-Host "Version number is the same, skipping publishing.."
-          #   Write-Output "ReleaseUpdated=false" | Out-File -FilePath $ENV:GITHUB_ENV -Encoding utf8 -Append
-          # }
+          } else {
+            Write-Host "Version number is the same, skipping publishing.."
+            Write-Output "ReleaseUpdated=false" | Out-File -FilePath $ENV:GITHUB_ENV -Encoding utf8 -Append
+          }
 
       - name: Update Repository
         run: |
