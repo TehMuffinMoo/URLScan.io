@@ -10,9 +10,10 @@
 #>
 
 ## Import Functions
-$FunctionsToImport = Get-ChildItem "$PSScriptRoot\Functions\Public\*.ps1"
+$PublicFunctions = Get-ChildItem "$PSScriptRoot\Functions\Public\*.ps1"
+$PrivateFunctions = Get-ChildItem "$PSScriptRoot\Functions\Private\*.ps1"
 
-foreach($FunctionToImport in $FunctionsToImport) {
+foreach($FunctionToImport in $($PublicFunctions + $PrivateFunctions)) {
   try {
     . $FunctionToImport.fullname
   } catch {
@@ -20,4 +21,4 @@ foreach($FunctionToImport in $FunctionsToImport) {
   }
 }
 
-Export-ModuleMember -Function ($FunctionToImport | Select-Object -ExpandProperty BaseName) -Alias *
+Export-ModuleMember -Function ($PublicFunctions | Select-Object -ExpandProperty BaseName) -Alias *
