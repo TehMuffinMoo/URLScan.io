@@ -1,1 +1,1 @@
-- Fix issue with `Invoke-URLScan` when using Powershell v5
+- Fix issue with `Set-URLScanConfiguration -DefaultPageLimit`
