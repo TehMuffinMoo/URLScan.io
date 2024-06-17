@@ -1,0 +1,26 @@
+name: Test Latest PS Gallery Version
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron:  '30 6 * * *'
+
+jobs:
+  Run-URLScan-Pester-Tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install URLScan.io Module
+        shell: pwsh
+        run: |
+          Install-Module URLScan.io -Force -Confirm:$false
+
+      - name: Run Pester Tests
+        shell: pwsh
+        run: |
+          Write-Host "Importing URLScan.io Module.."
+          Import-Module './Modules/URLScan.io/URLScan.io.psd1'
+
+          $PesterConfig = New-PesterConfiguration
+          $PesterConfig.Run.Path = './Tests/'
+          $PesterConfig.Output.Verbosity = 'Detailed'
+          Invoke-Pester -Configuration $PesterConfig
