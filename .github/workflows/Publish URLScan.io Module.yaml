@@ -34,6 +34,7 @@ jobs:
           if ($CustomModuleVersion -eq "true") {
             [version]$ModuleVersion = "${{ inputs.versionNumber }}"
           } else {
+            $ModuleVersion = $Module.Version
             $ModuleVersion = [version]::New($ModuleVersion.Major,$ModuleVersion.Minor,$ModuleVersion.Build,$ModuleVersion.Revision+1)
           }
           
@@ -45,7 +46,7 @@ jobs:
 
           ## Export Functions
           Write-Host "Updating Module Manifest to v$ModuleVersion.."
-          Update-ModuleManifest "./Modules/URLScan.io/URLScan.io.psd1" -ModuleVersion $ModuleVersion -FunctionsToExport ($(@($PublicFunctions) | Select-Object -ExpandProperty BaseName)) -AliasesToExport '*' -ReleaseNotes "https://PSURLScanio.readthedocs.io/en/latest/Change%20Log/"
+          Update-ModuleManifest "./Modules/URLScan.io/URLScan.io.psd1" -ModuleVersion $ModuleVersion -FunctionsToExport ($(@($PublicFunctions) | Select-Object -ExpandProperty BaseName)) -AliasesToExport '*' -ReleaseNotes "https://psurlscanio.readthedocs.io/en/latest/Change%20Log/"
 
           ## Export Manifest info to JSON file
           Write-Host "Counting functions.."
