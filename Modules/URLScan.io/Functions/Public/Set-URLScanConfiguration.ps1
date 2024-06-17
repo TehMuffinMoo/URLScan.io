@@ -12,6 +12,9 @@ function Set-URLScanConfiguration {
     .PARAMETER DefaultPageLimit
         Optionally set the default page size to be returned when performing queries to URLScan.io. This is set to 100 by default, which aligns with the Free Tier. If you have an account or subscription with URLScan.io, you can specify this value in line with your account limits.
 
+    .PARAMETER Persist
+        Setting the -Persist parameter will save the configuration permanently for your user on this device. Without using this switch, the settings will only be saved for the duration of the PowerShell session.
+
     .EXAMPLE
         PS> Set-URLScanConfiguration -APIKey '<APIKey>' -Persist
                                                                                                                   
