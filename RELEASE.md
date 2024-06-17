@@ -1,1 +1,1 @@
-- Fix issue with `Set-URLScanConfiguration -DefaultPageLimit`
+- Improve version checking
