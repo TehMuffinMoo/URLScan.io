@@ -27,10 +27,8 @@ Describe 'Invoke-URLScan' {
     Context 'Results' {
         It 'Retrieve Results' {
             $Submission = Invoke-URLScan -Scan 'google.com' -APIKey $ENV:URLSCAN_IO
-            while (!($Complete)) {
-                $Complete = Invoke-URLScan -UUID $Submission.uuid -ErrorAction SilentlyContinue -WarningAction SilentlyContinue
-                Wait-Event -Timeout 3
-            }
+            Wait-Event -Timeout 15
+            $Complete = Invoke-URLScan -UUID $Submission.uuid
             $Complete.task.domain | Should -Be 'google.com'
         }
     }
