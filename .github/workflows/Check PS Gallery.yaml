@@ -19,9 +19,9 @@ jobs:
           Install-Module URLScan.io -Force -Confirm:$false
 
       - name: Run Pester Tests
-        shell: pwsh
         env:
-          NUGET_KEY: ${{ secrets.URLSCAN_IO }}
+          URLSCAN_IO: ${{ secrets.URLSCAN_IO }}
+        shell: pwsh
         run: |
           $PesterConfig = New-PesterConfiguration
           $PesterConfig.Run.Path = './Tests/'
