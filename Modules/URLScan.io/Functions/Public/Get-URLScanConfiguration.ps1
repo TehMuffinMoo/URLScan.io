@@ -29,6 +29,11 @@ function Get-URLScanConfiguration {
   )
 
   $URLScanModule = Get-Module -ListAvailable -Name URLScan.io | Sort-Object Version | Select-Object -Last 1
+  if (!($URLScanModule)) {
+    if (Test-Path "$PSScriptRoot/URLScan.io.psd1") {
+      $URLScanModule = Test-ModuleManifest "$PSScriptRoot/URLScan.io.psd1"
+    }
+  }
 
   $CurrentConfig = [PSCustomObject]@{
     "API Key" = $(if ($ENV:URLScanAPIKey) { if ($IncludeAPIKey) {Get-URLScanAPIKey} else { "********" }} else {'API Key Not Set'})
