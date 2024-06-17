@@ -30,8 +30,8 @@ function Get-URLScanConfiguration {
 
   $URLScanModule = Get-Module -ListAvailable -Name URLScan.io | Sort-Object Version | Select-Object -Last 1
   if (!($URLScanModule)) {
-    if (Test-Path "$PSScriptRoot/URLScan.io.psd1") {
-      $URLScanModule = Test-ModuleManifest "$PSScriptRoot/URLScan.io.psd1"
+    if (Test-Path "$PSScriptRoot/Modules/URLScan.io/URLScan.io.psd1") {
+      $URLScanModule = Test-ModuleManifest "$PSScriptRoot/Modules/URLScan.io/URLScan.io.psd1"
     }
   }
 
