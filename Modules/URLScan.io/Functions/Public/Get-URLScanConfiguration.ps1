@@ -29,11 +29,16 @@ function Get-URLScanConfiguration {
   )
 
   $URLScanModule = Get-Module -ListAvailable -Name URLScan.io | Sort-Object Version | Select-Object -Last 1
+  if (!($URLScanModule)) {
+    if (Test-Path "./Modules/URLScan.io/URLScan.io.psd1") {
+      $URLScanModule = Test-ModuleManifest "./Modules/URLScan.io/URLScan.io.psd1"
+    }
+  }
 
   $CurrentConfig = [PSCustomObject]@{
     "API Key" = $(if ($ENV:URLScanAPIKey) { if ($IncludeAPIKey) {Get-URLScanAPIKey} else { "********" }} else {'API Key Not Set'})
     "Page Size" = $(if ($ENV:URLScanPageLimit) { $ENV:URLScanPageLimit } else { 100 })
-    "Version" = $URLScanModule.Version.ToString()
+    "Version" = $(if ($URLScanModule) { $URLScanModule.Version.ToString() })
   }
   return $CurrentConfig
 }

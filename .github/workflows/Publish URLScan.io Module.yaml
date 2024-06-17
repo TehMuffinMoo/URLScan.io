@@ -108,10 +108,13 @@ jobs:
       - name: Run Pester Tests
         shell: pwsh
         run: |
-          Install-Module Pester -Force -Confirm:$false
+          Write-Host "Importing URLScan.io Module.."
+          Import-Module './Modules/URLScan.io/URLScan.io.psd1'
+
           $PesterConfig = New-PesterConfiguration
           $PesterConfig.Run.Path = './Tests/'
-          Invoke-Pester -Configuration $PesterConfig -Output Detailed
+          $PesterConfig.Output.Verbosity = 'Detailed'
+          Invoke-Pester -Configuration $PesterConfig
 
       - name: Build and Publish
         id: build
