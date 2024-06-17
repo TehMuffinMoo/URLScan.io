@@ -297,7 +297,7 @@ function Invoke-URLScan {
                 Property =  @{n="id";e={$_.'_id'}},
                             @{n="time";e={$_.task.time}},
                             @{n="ip";e={$_.page.ip}},
-                            @{n="Url";e={$_.page.url}}
+                            @{n="url";e={$_.page.url}}
             }
     
             $Result.results | Where-Object {$_._id -notin $OldResult._id} | Select-Object @ReturnProperties
@@ -307,9 +307,3 @@ function Invoke-URLScan {
     }
     return $Results
 }
-
-$URLScanCountries = {
-    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
-    $(Invoke-RestMethod -Method GET -Uri 'https://urlscan.io/api/v1/availableCountries/').countries | Where-Object {$_ -like "$($wordToComplete)*"}
-}
-Register-ArgumentCompleter -CommandName Invoke-URLScan -ParameterName SourceCountry -ScriptBlock $URLScanCountries
