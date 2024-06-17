@@ -1,1 +1,1 @@
-- Add `Get-URLScanConfiguration` & `Set-URLScanConfiguration` functions to enable storing/retrieving module related configuration.
+- Fix issue with `Invoke-URLScan` when using Powershell v5
