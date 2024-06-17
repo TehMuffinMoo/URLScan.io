@@ -23,16 +23,11 @@ This function is used to get the current configuration for the URLScan.io Module
 
 ### EXAMPLE 1
 ```powershell
-Get-ibPSConfiguration
+Get-URLScanConfiguration | fl
 
-CSP Url          : https://csp.infoblox.com
-CSP API User     : svc-csp
-CSP Account      : ACME Corp
-CSP API Key      : ********
-ibPS Version     : 1.9.4.4
-ibPS Branch      : main
-Debug Mode       : Disabled
-Development Mode : Disabled
+API Key   : ********
+Page Size : 1000
+Version   : 1.0.0.4
 ```
 
 ## PARAMETERS

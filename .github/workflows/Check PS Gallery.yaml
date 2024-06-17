@@ -19,6 +19,8 @@ jobs:
           Install-Module URLScan.io -Force -Confirm:$false
 
       - name: Run Pester Tests
+        env:
+          URLSCAN_IO: ${{ secrets.URLSCAN_IO }}
         shell: pwsh
         run: |
           $PesterConfig = New-PesterConfiguration

@@ -106,6 +106,8 @@ jobs:
           Remove-Item './docs-temp' -Recurse -Force -Confirm:$false
 
       - name: Run Pester Tests
+        env:
+          URLSCAN_IO: ${{ secrets.URLSCAN_IO }}
         shell: pwsh
         run: |
           Write-Host "Importing URLScan.io Module.."
