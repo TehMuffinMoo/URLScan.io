@@ -62,16 +62,16 @@ function Set-URLScanConfiguration {
     if ($Persist) {
       $Platform = Detect-OS
       if ($Platform -eq "Windows") {
-        [System.Environment]::SetEnvironmentVariable('URLScanAPIKey',$Base64,[System.EnvironmentVariableTarget]::User)
-        $ENV:URLScanAPIKey = $Base64
+        [System.Environment]::SetEnvironmentVariable('URLScanPageLimit',$DefaultPageLimit,[System.EnvironmentVariableTarget]::User)
+        $ENV:URLScanPageLimit = $DefaultPageLimit
         Write-Host "URLScan.io default page limit has been set to: $($DefaultPageLimit) permanently for $($env:USERNAME) on $($env:COMPUTERNAME)." -ForegroundColor Green
       } elseif ($Platform -eq "Mac" -or $Platform -eq "Unix") {
-        $ENV:URLScanAPIKey = $Base64
+        $ENV:URLScanPageLimit = $DefaultPageLimit
         if (!(Test-Path ~/.zshenv)) {
           touch ~/.zshenv
         }
-        sed -i '' -e '/URLScanAPIKey/d' ~/.zshenv
-        echo "export URLScanAPIKey=$Base64" >> ~/.zshenv
+        sed -i '' -e '/URLScanPageLimit/d' ~/.zshenv
+        echo "export URLScanPageLimit=$DefaultPageLimit" >> ~/.zshenv
         Write-Host "URLScan.io default page limit has been set to: $($DefaultPageLimit) permanently for $env:USER on $(scutil --get LocalHostName)." -ForegroundColor Green
       }
     } else {
