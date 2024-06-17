@@ -105,6 +105,14 @@ jobs:
           Write-Host "Removing temporary docs directory.."
           Remove-Item './docs-temp' -Recurse -Force -Confirm:$false
 
+      - name: Run Pester Tests
+        shell: pwsh
+        run: |
+          Install-Module Pester -Force -Confirm:$false
+          $PesterConfig = New-PesterConfiguration
+          $PesterConfig.Run.Path = './Tests/'
+          Invoke-Pester -Configuration $PesterConfig -Output Detailed
+
       - name: Build and Publish
         id: build
         env:
