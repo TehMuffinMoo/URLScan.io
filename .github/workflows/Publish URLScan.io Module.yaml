@@ -34,6 +34,7 @@ jobs:
           if ($CustomModuleVersion -eq "true") {
             [version]$ModuleVersion = "${{ inputs.versionNumber }}"
           } else {
+            $ModuleVersion = $Module.Version
             $ModuleVersion = [version]::New($ModuleVersion.Major,$ModuleVersion.Minor,$ModuleVersion.Build,$ModuleVersion.Revision+1)
           }
           
@@ -42,11 +43,10 @@ jobs:
 
           ## Functions to export
           $PublicFunctions = Get-ChildItem "./Modules/URLScan.io/Functions/Public/*.ps1"
-          #$PrivateFunctions = Get-ChildItem "./Modules/URLScan.io/Functions/Private/*.ps1"
 
           ## Export Functions
           Write-Host "Updating Module Manifest to v$ModuleVersion.."
-          Update-ModuleManifest "./Modules/URLScan.io/URLScan.io.psd1" -ModuleVersion $ModuleVersion -FunctionsToExport ($(@($PublicFunctions) | Select-Object -ExpandProperty BaseName)) -AliasesToExport '*' -ReleaseNotes "https://PSURLScanio.readthedocs.io/en/latest/Change%20Log/"
+          Update-ModuleManifest "./Modules/URLScan.io/URLScan.io.psd1" -ModuleVersion $ModuleVersion -FunctionsToExport ($(@($PublicFunctions) | Select-Object -ExpandProperty BaseName)) -AliasesToExport '*' -ReleaseNotes "https://psurlscanio.readthedocs.io/en/latest/Change%20Log/"
 
           ## Export Manifest info to JSON file
           Write-Host "Counting functions.."
@@ -95,7 +95,7 @@ jobs:
           $OldDocs = Get-ChildItem ./docs/Functions/ -Recurse -File | where {$_.Name -notin $ExcludedDocs.doc} | Remove-Item -Force
 
           Write-Host "Relocating documentation.."
-          foreach ($F in Get-ChildItem './Modules/URLScan.io/Functions/' -Recurse -File) {
+          foreach ($F in Get-ChildItem './Modules/URLScan.io/Functions/Public' -Recurse -File) {
             $DocToFind = "./docs-temp/$($F.BaseName).md"
             Move-Item "$($DocToFind)" "./docs/Functions" -Force
           }

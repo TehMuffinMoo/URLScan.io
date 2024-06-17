@@ -49,4 +49,4 @@ Import-Module ./Modules/URLScan.io/URLScanIO.psm1
 ```
 
 ## Documentation
-All documentation is now available here: [URLScan.io Documentation](https://PSURLScanio.readthedocs.io)
+All documentation is now available here: [URLScan.io Documentation](https://psurlscanio.readthedocs.io)

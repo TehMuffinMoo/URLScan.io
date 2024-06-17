@@ -1,1 +1,1 @@
-- Initial Publication
+- Add `Get-URLScanConfiguration` & `Set-URLScanConfiguration` functions to enable storing/retrieving module related configuration.
