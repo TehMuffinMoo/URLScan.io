@@ -21,7 +21,7 @@
 
 <p align="center">
   <a href="#how-to-use">How To Use</a> •
-  <a href="https://ibps.readthedocs.io" target="_blank">Documentation</a> •
+  <a href="https://psurlscanio.readthedocs.io" target="_blank">Documentation</a> •
   <a href="https://www.powershellgallery.com/packages/URLScan.io/" target="_blank">Powershell Gallery</a>
 </p>
 
