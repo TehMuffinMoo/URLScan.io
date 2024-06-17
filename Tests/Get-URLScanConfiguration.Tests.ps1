@@ -1,6 +1,7 @@
 Describe 'Get-URLScanConfiguration' {
     It 'Get URLScan.io Module Version' {
         $Manifest = (Test-ModuleManifest -Path "./Modules/URLScan.io/URLScan.io.psd1")
+        Get-URLScanConfiguration
         (Get-URLScanConfiguration).Version | Should -Be $Manifest.Version
     }
     It 'Get URLScan.io Default Page Size' {
