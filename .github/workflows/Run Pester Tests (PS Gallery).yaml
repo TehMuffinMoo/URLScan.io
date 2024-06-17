@@ -1,4 +1,4 @@
-name: Test Latest PS Gallery Version
+name: Run Pester Tests on Latest PS Gallery Version
 
 on:
   workflow_dispatch:
