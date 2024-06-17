@@ -28,7 +28,7 @@ function Get-URLScanConfiguration {
     [Switch]$IncludeAPIKey
   )
 
-  $URLScanModule = Get-Module -ListAvailable -Name URLScan.io
+  $URLScanModule = Get-Module -ListAvailable -Name URLScan.io | Sort-Object Version | Select-Object -Last 1
 
   $CurrentConfig = [PSCustomObject]@{
     "API Key" = $(if ($ENV:URLScanAPIKey) { if ($IncludeAPIKey) {Get-URLScanAPIKey} else { "********" }} else {'API Key Not Set'})

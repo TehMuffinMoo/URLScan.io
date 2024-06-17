@@ -1,1 +1,2 @@
-- Fix issue with `Set-URLScanConfiguration -DefaultPageLimit`
+- Improve version checking when multiple versions are installed
+- Add missing misc function for detecting OS
