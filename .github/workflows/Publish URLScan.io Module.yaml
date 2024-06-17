@@ -42,7 +42,6 @@ jobs:
 
           ## Functions to export
           $PublicFunctions = Get-ChildItem "./Modules/URLScan.io/Functions/Public/*.ps1"
-          #$PrivateFunctions = Get-ChildItem "./Modules/URLScan.io/Functions/Private/*.ps1"
 
           ## Export Functions
           Write-Host "Updating Module Manifest to v$ModuleVersion.."

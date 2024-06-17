@@ -88,6 +88,9 @@ function Invoke-URLScan {
         task      : @{apexDomain=infoblox.com; domain=infoblox.com; method=api; source=4e882e8b; tags=System.Object[]; time=6/14/2024 2:28:58 PM; url=https://infoblox.com/threat-intel; uuid=16e64fe3-684e-4a35-8d3b-dc2880b6e04b; visibility=private; 
                     reportURL=https://urlscan.io/result/16e64fe3-684e-4a35-8d3b-dc2880b6e04b/; screenshotURL=https://urlscan.io/screenshots/16e64fe3-684e-4a35-8d3b-dc2880b6e04b.png; domURL=https://urlscan.io/dom/16e64fe3-684e-4a35-8d3b-dc2880b6e04b/}
         verdicts  : @{overall=; urlscan=; engines=; community=}
+
+    .FUNCTIONALITY
+        URLScan.io
     #>
     param(
         [Parameter(ParameterSetName='Query')]
@@ -119,6 +122,16 @@ function Invoke-URLScan {
     ## Initialize Header Object
     $Headers = @{
         "Content-Type" = "application/json"
+    }
+
+    ## Check if Default Page Size has been set
+    if ($ENV:URLScanPageLimit) {
+        $PageSize = $ENV:URLScanPageLimit
+    }
+
+    ## Check if API Key has been saved
+    if ($ENV:URLScanAPIKey) {
+        $APIKey = Get-URLScanAPIKey
     }
 
     ## Append API Key to Header Object if specified
