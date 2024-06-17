@@ -42,6 +42,28 @@ This will also take into account the rate limiting whilst making queries, ensuri
 
 ### EXAMPLE 1
 ```powershell
+Invoke-URLScan -Query 'task.url:google.com AND country:gb AND page.server:nginx' | Select-Object -ExpandProperty task | ft -AutoSize
+
+(100/100): Querying URLScan.io..
+
+visibility method    domain                                                 apexDomain                  time                   uuid                                 url
+---------- ------    ------                                                 ----------                  ----                   ----                                 ---
+public     manual    google.com                                             google.com                  5/16/2024 5:33:33 AM   42e9e5ec-e10e-441d-be9a-99865a2ae0ad https://google.com/amp/s/lido.community
+public     api       www.hvacrecruitment.com                                hvacrecruitment.com         4/15/2024 1:07:20 PM   4159106e-f034-47b0-8a66-5c0145cceb04 https://www.hvacrecruitment.com/helpdesk-recruitment-agency?source=google.com
+public     api       www1-google.com                                        www1-google.com             4/15/2024 6:59:00 AM   d307c542-1445-4dee-a7e2-1045fcd72d3b http://www1-google.com/
+public     manual    google.com                                             google.com                  3/31/2024 7:32:44 PM   72b7e643-7134-4563-a2a5-eb2621156117 https://google.com/amp/s/coinmarketcap.network
+public     manual    google.com                                             google.com                  3/28/2024 6:47:27 AM   4433dc67-2b4c-4b47-927d-6b36d2fe7534 https://google.com/amp/s/lido.fi.accelerator-program.support
+public     manual    google.com                                             google.com                  3/27/2024 6:17:43 AM   d14d8e14-7ef8-442f-81c6-3e2ce5ce21e1 https://google.com/amp/s/lido.fi.accelerator-program.support
+public     manual    google.com                                             google.com                  3/23/2024 7:52:49 AM   7820fbc1-6c44-409b-a099-3d2d58d059f1 https://google.com/amp/s/t2m.io/abjriGb?Claim-500USDT-Voucher
+public     manual    google.com                                             google.com                  3/22/2024 8:16:39 PM   31b9a33b-b0cd-4cd5-83e5-1804ac1f8a95 https://google.com/amp/s/mailserver.promo?Claim-Voucher
+public     manual    google.com                                             google.com                  3/11/2024 11:35:33 AM  482b916d-57e8-4e3c-9748-c1d9d95f9880 https://google.com/amp/s/mailing-database.com
+public     manual    google.com                                             google.com                  2/28/2024 12:47:37 AM  f03c344b-d2cc-4f38-93df-50b3a74e9465 https://google.com/amp/s/insights-ripple.com
+public     manual    google.com                                             google.com                  2/27/2024 9:15:42 PM   3299b0b9-e1e9-4f0a-b99e-f2d1833fc4dd https://google.com/amp/s/insights-ripple.com
+...
+```
+
+### EXAMPLE 2
+```powershell
 $Results = Invoke-URLScan -Query 'domain:google.com' -Size 300
     
 Query Size Exceeds Page Size 100. Enabling paging of results..
@@ -71,7 +93,7 @@ public     automatic nalozhka.nalozhka.www.kwid9.24-hour-sewer-service2.xyz     
 ...
 ```
 
-### EXAMPLE 2
+### EXAMPLE 3
 ```powershell
 Invoke-URLScan -Scan 'https://infoblox.com/threat-intel' -Visibility private -APIKey $URLScanAPIKey -WaitForScan
 Waiting for scan results..
