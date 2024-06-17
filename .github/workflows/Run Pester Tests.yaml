@@ -1,6 +1,10 @@
 name: Run URLScan.io Pester Tests
 
-on: workflow_dispatch
+on:
+  workflow_dispatch
+  push:
+    branches:
+      - dev
 
 jobs:
   Run-URLScan-Pester-Tests:
