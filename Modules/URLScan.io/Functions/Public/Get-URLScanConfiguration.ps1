@@ -33,7 +33,7 @@ function Get-URLScanConfiguration {
   $CurrentConfig = [PSCustomObject]@{
     "API Key" = $(if ($ENV:URLScanAPIKey) { if ($IncludeAPIKey) {Get-URLScanAPIKey} else { "********" }} else {'API Key Not Set'})
     "Page Size" = $(if ($ENV:URLScanPageLimit) { $ENV:URLScanPageLimit } else { 100 })
-    "Version" = $URLScanModule.Version.ToString()
+    "Version" = $(if ($URLScanModule) { $URLScanModule.Version.ToString() }
   }
   return $CurrentConfig
 }
