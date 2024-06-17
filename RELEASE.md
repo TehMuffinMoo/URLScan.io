@@ -1,1 +1,2 @@
-- Improve version checking
+- Improve version checking when multiple versions are installed
+- Add missing misc function for detecting OS
