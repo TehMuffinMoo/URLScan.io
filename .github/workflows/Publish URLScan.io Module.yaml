@@ -94,7 +94,7 @@ jobs:
           $OldDocs = Get-ChildItem ./docs/Functions/ -Recurse -File | where {$_.Name -notin $ExcludedDocs.doc} | Remove-Item -Force
 
           Write-Host "Relocating documentation.."
-          foreach ($F in Get-ChildItem './Modules/URLScan.io/Functions/' -Recurse -File) {
+          foreach ($F in Get-ChildItem './Modules/URLScan.io/Functions/Public' -Recurse -File) {
             $DocToFind = "./docs-temp/$($F.BaseName).md"
             Move-Item "$($DocToFind)" "./docs/Functions" -Force
           }
