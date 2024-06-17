@@ -1,7 +1,7 @@
 name: Run URLScan.io Pester Tests
 
 on:
-  workflow_dispatch
+  workflow_dispatch:
   push:
     branches:
       - dev
