@@ -22,4 +22,5 @@ jobs:
 
           $PesterConfig = New-PesterConfiguration
           $PesterConfig.Run.Path = './Tests/'
-          Invoke-Pester -Configuration $PesterConfig -Output Detailed
+          $PesterConfig.Output.Verbosity = 'Detailed'
+          Invoke-Pester -Configuration $PesterConfig
