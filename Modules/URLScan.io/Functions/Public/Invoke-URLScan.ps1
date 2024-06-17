@@ -224,7 +224,7 @@ function Invoke-URLScan {
             Write-Host "($($ResultCountVisible)/$($Size)): Querying URLScan.io.."
             $Result = Invoke-WebRequest -Method GET -Uri "https://urlscan.io/api/v1/search/?q=$($Query)&size=$($QuerySize)$($SearchAfter)" -Headers $Headers
 
-            $JSONResult = $Result.Content | ConvertFrom-Json -Depth 5
+            $JSONResult = $Result.Content | ConvertFrom-Json
 
             if ($JSONResult.results.count -lt $PageSize) {
                 Write-Host "Requested Page Size: $($PageSize) but only $($JSONResult.results.count) results returned. Adjusting page size to: $($JSONResult.results.count)" -ForegroundColor Yellow
