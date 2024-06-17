@@ -168,7 +168,7 @@ function Invoke-URLScan {
 
             ## If $JSONResult is already populated from previous loop, append the search_after query parameter to enable paging. Rate Limiting is applied here too.
             if ($JSONResult) {
-                $SearchAfter = "&search_after=$(($JSONResult.results | Select -Last 1).sort -join ",")"
+                $SearchAfter = "&search_after=$(($JSONResult.results | Select-Object -Last 1).sort -join ",")"
 
                 ## Apply Rate Limiting
                 $ResultHeaders = $Result.Headers
@@ -280,7 +280,7 @@ function Invoke-URLScan {
                             @{n="Url";e={$_.page.url}}
             }
     
-            $Result.results | Where-Object {$_._id -notin $OldResult._id} | select @ReturnProperties
+            $Result.results | Where-Object {$_._id -notin $OldResult._id} | Select-Object @ReturnProperties
             $OldResult = $Result.results
             Start-Sleep 5
         }
