@@ -1,3 +1,4 @@
 - Add specific `Watch-URLScan` function to improve/replace `Invoke-URLScan -Watch`
 - Add specific `New-URLScan` function to improve/replace `Invoke-URLScan -Scan ...`
+- Add specific `Get-URLScan` function to improve/replace `Invoke-URLScan -UUID ...`
 - Add `Get-URLScanQuota` function for checking Rate Limit Quota
