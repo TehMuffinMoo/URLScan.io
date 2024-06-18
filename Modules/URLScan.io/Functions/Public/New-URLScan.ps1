@@ -119,6 +119,8 @@ function New-URLScan {
                 Wait-Event -Timeout 3
             }
         }
+    } else {
+        $Results = $ScanSubmission
     }
     return $Results
 }
