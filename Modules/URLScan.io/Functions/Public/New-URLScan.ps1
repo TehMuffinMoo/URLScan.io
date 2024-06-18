@@ -52,6 +52,25 @@ function New-URLScan {
         url        : https://google.com/test
         country    : gb
 
+    .EXAMPLE
+        PS> New-URLScan -URL 'https://infoblox.com/threat-intel' -Visibility private -WaitForScan
+        Waiting for scan results..
+        Waiting for scan results..
+        Waiting for scan results..
+
+        data      : @{requests=System.Object[]; cookies=System.Object[]; console=System.Object[]; links=System.Object[]; timing=; globals=System.Object[]}
+        lists     : @{ips=System.Object[]; countries=System.Object[]; asns=System.Object[]; domains=System.Object[]; servers=System.Object[]; urls=System.Object[]; linkDomains=System.Object[]; certificates=System.Object[]; hashes=System.Object[]}
+        meta      : @{processors=}
+        page      : @{asn=AS54113; asnname=FASTLY, US; city=Frankfurt am Main; country=DE; domain=www.infoblox.com; ip=146.75.122.253; server=nginx; url=https://www.infoblox.com/threat-intel/; apexDomain=infoblox.com; umbrellaRank=897192; tlsIssuer=R3; tlsValidFrom=5/9/2024 3:27:21 AM; tlsValidDays=89; 
+                    tlsAgeDays=36; redirected=sub-domain; status=200; mimeType=text/html; title=Infoblox Threat Intel - Threat Intelligence for DNS}
+        scanner   : @{country=gb}
+        stats     : @{IPv6Percentage=0; adBlocked=0; domainStats=System.Object[]; ipStats=System.Object[]; malicious=0; protocolStats=System.Object[]; regDomainStats=System.Object[]; resourceStats=System.Object[]; securePercentage=97; secureRequests=142; serverStats=System.Object[]; tlsStats=System.Object[]; 
+                    totalLinks=32; uniqCountries=5}
+        submitter : @{country=GB}
+        task      : @{apexDomain=infoblox.com; domain=infoblox.com; method=api; source=4e882e8b; tags=System.Object[]; time=6/14/2024 2:28:58 PM; url=https://infoblox.com/threat-intel; uuid=16e64fe3-684e-4a35-8d3b-dc2880b6e04b; visibility=private; 
+                    reportURL=https://urlscan.io/result/16e64fe3-684e-4a35-8d3b-dc2880b6e04b/; screenshotURL=https://urlscan.io/screenshots/16e64fe3-684e-4a35-8d3b-dc2880b6e04b.png; domURL=https://urlscan.io/dom/16e64fe3-684e-4a35-8d3b-dc2880b6e04b/}
+        verdicts  : @{overall=; urlscan=; engines=; community=}
+
     .FUNCTIONALITY
         URLScan.io
     #>
@@ -68,17 +87,7 @@ function New-URLScan {
         [Switch]$WaitForScan,
         [String]$APIKey
     )
-    $Headers = @{
-        "Content-Type" = "application/json"
-    }
-    ## Check if API Key has been saved
-    if ($ENV:URLScanAPIKey) {
-        $Headers.'API-Key' = Get-URLScanAPIKey
-    }
-    ## Append API Key to Header Object if specified
-    if ($APIKey) {
-        $Headers.'API-Key' = $APIKey
-    }
+    $Headers = Get-URLScanHeaders -APIKey $($APIKey)
     $Splat = @{
         'url' = $URL
         'visibility' = $Visibility
@@ -99,16 +108,14 @@ function New-URLScan {
         $Splat.'overrideSafety' = $true
     }
     $JSONPayload = $Splat | ConvertTo-Json -Depth 2 -Compress
-    $Results = Invoke-RestMethod -Method POST -Uri "https://urlscan.io/api/v1/scan/" -Headers $Headers -Body $JSONPayload
+    $ScanSubmission = Invoke-RestMethod -Method POST -Uri "https://urlscan.io/api/v1/scan/" -Headers $Headers -Body $JSONPayload
 
     if ($WaitForScan) {
-        while (!($ScanResults)) {
+        while (!($Results)) {
             Write-Host "Waiting for scan results.."
             try {
-                $Results = Invoke-URLScan -UUID $($Results.uuid)
-                $ScanResults = $true
+                $Results = $ScanSubmission | Get-URLScan
             } catch {
-                $ScanResults = $false
                 Wait-Event -Timeout 3
             }
         }

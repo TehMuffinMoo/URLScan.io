@@ -15,6 +15,10 @@ function Get-URLScan {
     .PARAMETER ReturnType
         The return type for results to be returned in. (Object / JSON)
 
+    .PARAMETER APIKey
+        The -APIKey parameter enables you to specify an API Key if you have an account with URLScan.io. This will enable higher query limits and larger page sizes.
+        This is only necessary if your API Key has not been saved using Set-URLScanConfiguration
+
     .EXAMPLE
         $Scan = New-URLScan -URL 'https://bbc.co.uk'
         $Scan | Get-URLScan -Return Certificates
@@ -52,7 +56,8 @@ function Get-URLScan {
         [ValidateSet('Object','JSON')]
         [String]$ReturnType = 'Object'
     )
-    $Results = Invoke-RestMethod -Method GET -Uri "https://urlscan.io/api/v1/result/$($UUID)/" -Headers $Headers -Body $JSONPayload
+    $Headers = Get-URLScanHeaders -APIKey $($APIKey)
+    $Results = Invoke-RestMethod -Method GET -Uri "https://urlscan.io/api/v1/result/$($UUID)/" -Headers $Headers
     if ($Results) {
         $Date = Get-Date
         Switch($Return) {

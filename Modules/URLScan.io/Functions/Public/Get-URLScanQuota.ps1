@@ -38,15 +38,7 @@ function Get-URLScanQuota {
         [Switch]$Summary,
         [String]$APIKey
     )
-    $Headers = @{
-        "Content-Type" = "application/json"
-    }
-    if ($ENV:URLScanAPIKey) {
-        $Headers.'API-Key' = Get-URLScanAPIKey
-    }
-    if ($APIKey) {
-        $Headers.'API-Key' = $APIKey
-    }
+    $Headers = Get-URLScanHeaders -APIKey $($APIKey)
     $Results = Invoke-RestMethod -Method GET -Uri "https://urlscan.io/user/quotas/" -Headers $Headers | Select-Object -ExpandProperty limits
 
     if ($Results) {

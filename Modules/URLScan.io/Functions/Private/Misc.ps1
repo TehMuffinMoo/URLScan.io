@@ -14,3 +14,19 @@ function Detect-OS {
       }
     }
 }
+
+function Get-URLScanHeaders {
+  param (
+    $APIKey
+  )
+  $Headers = @{
+    "Content-Type" = "application/json"
+  }
+  if ($ENV:URLScanAPIKey) {
+      $Headers.'API-Key' = Get-URLScanAPIKey
+  }
+  if ($APIKey) {
+      $Headers.'API-Key' = $APIKey
+  }
+  return $Headers
+}
