@@ -1,4 +1,4 @@
-name: Rebuild Documentation
+name: Export Cmdlets & Rebuild Documentation
 
 on: workflow_dispatch
 #  push:
@@ -10,6 +10,27 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Update Module Manifest / Export Cmdlets
+        shell: pwsh
+        run: |
+          Write-Host "Updating changes to Module.."
+          Copy-Item "./Modules/URLScan.io.ps1" "./Modules/URLScan.io/URLScan.io.psm1" -Force
+
+          Write-Host "Testing Module Manifest.."
+          $Module = Test-ModuleManifest -Path "./Modules/URLScan.io/URLScan.io.psd1"
+
+          ## Functions to export
+          $PublicFunctions = Get-ChildItem "./Modules/URLScan.io/Functions/Public/*.ps1"
+
+          ## Export Functions
+          Update-ModuleManifest "./Modules/URLScan.io/URLScan.io.psd1" -FunctionsToExport ($(@($PublicFunctions) | Select-Object -ExpandProperty BaseName)) -AliasesToExport '*' -ReleaseNotes "https://psurlscanio.readthedocs.io/en/latest/Change%20Log/"
+
+          ## Export Manifest info to JSON file
+          Write-Host "Counting functions.."
+          $Module = Test-ModuleManifest -Path "./Modules/URLScan.io/URLScan.io.psd1" | Select-Object Name,@{name="Version";expression={$_.Version.ToString()}},Description,Author,ProjectUri,LicenseUri,ReleaseNotes,CompanyName,Copyright,ExportedFunctions
+          $Module | Add-Member -MemberType NoteProperty -Name "Count" -Value $Module.ExportedFunctions.Count
+          $Module | Select-Object -ExcludeProperty ExportedFunctions | ConvertTo-Json -Depth 5 | Out-File ./docs/manifest.json -Force
 
       - name: Install platyPS module
         shell: pwsh
