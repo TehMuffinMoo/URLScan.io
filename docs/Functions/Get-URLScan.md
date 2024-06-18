@@ -41,7 +41,38 @@ a1.api.bbc.co.uk        GlobalSign RSA OV SSL CA 2018                        5/1
 
 ### EXAMPLE 2
 ```powershell
-...
+$Scan = New-URLScan -URL 'https://bbc.co.uk'
+$Scan | Get-URLScan -Return Links
+
+href                                                                               text
+----                                                                               ----
+https://www.bbc.co.uk/usingthebbc/cookies/what-do-i-need-to-know-about-cookies/    cookies
+https://www.bbc.co.uk/usingthebbc/cookies/how-can-i-change-my-bbc-cookie-settings/ No, take me to settings
+https://www.bbc.co.uk/                                                             BBC Homepage
+https://www.bbc.co.uk/accessibility/                                               Accessibility Help
+https://session.bbc.com/session?lang=en-GB&ptrt=https://www.bbc.com/               Sign in
+https://www.bbc.co.uk/notifications                                                Notifications
+https://www.bbc.co.uk/news                                                         News
+https://www.bbc.co.uk/sport                                                        Sport
+```
+
+### EXAMPLE 3
+```powershell
+$Scan = New-URLScan -URL 'https://bbc.co.uk'
+$Scan | Get-URLScan -Return Cookies | ft
+
+Name                                Domain          Path Size HTTPOnly Secure Session Expires
+----                                ------          ---- ---- -------- ------ ------- -------
+ckns_mvt                            .bbc.co.uk      /      44    False   True   False 12/5/2079 8:54:59 AM
+ckns_mvt                            .bbc.com        /      44    False   True   False 12/5/2079 8:55:02 AM
+DotMetrics.DeviceKey                .dotmetrics.net /      29    False   True   False 12/5/2079 8:55:05 AM
+DotMetrics.UniqueUserIdentityCookie .dotmetrics.net /     165    False   True   False 12/5/2079 8:55:05 AM
+atuserid                            .bbc.com        /     194    False   True   False 1/6/2080 8:55:04 AM
+_cb                                 .bbc.com        /      21    False   True   False 1/4/2080 8:55:04 AM
+_chartbeat2                         .bbc.com        /      74    False   True   False 1/4/2080 8:55:04 AM
+_cb_svref                           .bbc.com        /      39    False   True   False 12/5/2078 9:25:05 AM
+DM_SitId1778                        www.bbc.com     /      13    False   True    True 6/18/2024 4:57:49 PM
+DM_SitId1778SecId13934              www.bbc.com     /      23    False   True    True 6/18/2024 4:57:49 PM
 ```
 
 ## PARAMETERS

@@ -1,3 +1,6 @@
+## 1.0.0.6
+- Fix minor bug with New-URLScan
+
 ## 1.0.0.5
 - Add specific `Watch-URLScan` function for watching/tailing the live feed of URLScan.io submissions
 - Add specific `New-URLScan` function to improve new URLScan.io submissions
@@ -19,6 +22,7 @@
 
 ## 1.0.0.0
 - Initial Publication
+
 
 
 
