@@ -118,6 +118,7 @@ verdicts  : @{overall=; urlscan=; engines=; community=}
 
 ### -Query
 The Query to send to URLScan.io, such as 'domain:mydomain.com'.
+Searchable fields can be found in URLScan.io documentation located here: https://urlscan.io/docs/search/
 
 ```yaml
 Type: String
@@ -179,8 +180,7 @@ Accept wildcard characters: False
 ```
 
 ### -SourceCountry
-The source country to use when submitting a new scan request.
-Only used when -Scan is specified.
+{{ Fill SourceCountry Description }}
 
 ```yaml
 Type: String
@@ -263,6 +263,7 @@ Accept wildcard characters: False
 ### -APIKey
 The -APIKey parameter enables you to specify an API Key if you have an account with URLScan.io.
 This will enable higher query limits and larger page sizes.
+This is only necessary if your API Key has not been saved using Set-URLScanConfiguration
 
 ```yaml
 Type: String
