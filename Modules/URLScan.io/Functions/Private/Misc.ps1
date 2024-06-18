@@ -13,4 +13,4 @@ function Detect-OS {
         return "Unix"
       }
     }
-  }
+}

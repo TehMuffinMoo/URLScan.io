@@ -8,6 +8,7 @@ function Invoke-URLScan {
 
     .PARAMETER Query
         The Query to send to URLScan.io, such as 'domain:mydomain.com'.
+        Searchable fields can be found in URLScan.io documentation located here: https://urlscan.io/docs/search/
 
     .PARAMETER Scan
         The URL to use when submitting a new scan request.
@@ -17,9 +18,6 @@ function Invoke-URLScan {
 
     .PARAMETER Visibility
         The visibility to use when submitting a new scan request (public/unlisted/private). Default is 'public'. Only used when -Scan is specified.
-
-    .PARAMETER SourceCountry
-        The source country to use when submitting a new scan request. Only used when -Scan is specified.
 
     .PARAMETER WaitForScan
         The -WaitForScan parameter will wait for the scan to complete, then return the results.
@@ -37,6 +35,7 @@ function Invoke-URLScan {
 
     .PARAMETER APIKey
         The -APIKey parameter enables you to specify an API Key if you have an account with URLScan.io. This will enable higher query limits and larger page sizes.
+        This is only necessary if your API Key has not been saved using Set-URLScanConfiguration
 
     .PARAMETER RateLimitPause
         The -RateLimitPause parameter is used to define the minimum percentage that can be reached of the allowable rate limit before queries are paused. Only used when -Query is specified.
@@ -151,7 +150,7 @@ function Invoke-URLScan {
 
     ## Check if API Key has been saved
     if ($ENV:URLScanAPIKey) {
-        $APIKey = Get-URLScanAPIKey
+        $Headers.'API-Key' = Get-URLScanAPIKey
     }
 
     ## Append API Key to Header Object if specified
