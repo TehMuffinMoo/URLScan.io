@@ -69,7 +69,7 @@ Description = 'URLScan.io PowerShell Module'
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = 'Get-URLScanConfiguration', 'Get-URLScan'
+FunctionsToExport = 'Get-URLScanConfiguration', 'Get-URLScan',
                'Set-URLScanConfiguration', 'New-URLScan', 'Watch-URLScan',
                'Get-URLScanQuota', 'Search-URLScan'
 
