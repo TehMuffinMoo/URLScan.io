@@ -5,44 +5,26 @@ online version:
 schema: 2.0.0
 ---
 
-# Invoke-URLScan
+# Search-URLScan
 
 ## SYNOPSIS
-This function is a generic wrapper for URLScan.io
+This function is used to perform a search query against URLScan.io
 
 ## SYNTAX
 
-### Query
 ```
-Invoke-URLScan [-Query <String>] [-Size <Int32>] [-PageSize <Int32>] [-APIKey <String>]
- [-RateLimitPause <Int32>] [<CommonParameters>]
-```
-
-### Scan
-```
-Invoke-URLScan [-Scan <String>] [-Visibility <String>] [-SourceCountry <String>] [-WaitForScan]
- [-APIKey <String>] [<CommonParameters>]
-```
-
-### Watch
-```
-Invoke-URLScan [-Watch] [-APIKey <String>] [<CommonParameters>]
-```
-
-### Result
-```
-Invoke-URLScan [-UUID <String>] [-APIKey <String>] [<CommonParameters>]
+Search-URLScan [-Query] <String> [[-Size] <Int32>] [[-PageSize] <Int32>] [[-APIKey] <String>]
+ [[-RateLimitPause] <Int32>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-This function enables you to make queries to URLScan.io, includes parameters for using an API Key, result count and results paging.
-This will also take into account the rate limiting whilst making queries, ensuring you don't hit limits.
+This function is used to perform a search query against URLScan.io.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 ```powershell
-Invoke-URLScan -Query 'task.url:google.com AND country:gb AND page.server:nginx' | Select-Object -ExpandProperty task | ft -AutoSize
+Search-URLScan -Query 'task.url:google.com AND country:gb AND page.server:nginx' | Select-Object -ExpandProperty task | ft -AutoSize
 
 (100/100): Querying URLScan.io..
 
@@ -64,7 +46,7 @@ public     manual    google.com                                             goog
 
 ### EXAMPLE 2
 ```powershell
-$Results = Invoke-URLScan -Query 'domain:google.com' -Size 300
+$Results = Search-URLScan -Query 'domain:google.com' -Size 300
     
 Query Size Exceeds Page Size 100. Enabling paging of results..
 (100/300): Querying URLScan.io..
@@ -93,136 +75,20 @@ public     automatic nalozhka.nalozhka.www.kwid9.24-hour-sewer-service2.xyz     
 ...
 ```
 
-### EXAMPLE 3
-```powershell
-Invoke-URLScan -Scan 'https://infoblox.com/threat-intel' -Visibility private -APIKey $URLScanAPIKey -WaitForScan
-Waiting for scan results..
-Waiting for scan results..
-Waiting for scan results..
-
-data      : @{requests=System.Object[]; cookies=System.Object[]; console=System.Object[]; links=System.Object[]; timing=; globals=System.Object[]}
-lists     : @{ips=System.Object[]; countries=System.Object[]; asns=System.Object[]; domains=System.Object[]; servers=System.Object[]; urls=System.Object[]; linkDomains=System.Object[]; certificates=System.Object[]; hashes=System.Object[]}
-meta      : @{processors=}
-page      : @{asn=AS54113; asnname=FASTLY, US; city=Frankfurt am Main; country=DE; domain=www.infoblox.com; ip=146.75.122.253; server=nginx; url=https://www.infoblox.com/threat-intel/; apexDomain=infoblox.com; umbrellaRank=897192; tlsIssuer=R3; tlsValidFrom=5/9/2024 3:27:21 AM; tlsValidDays=89; 
-            tlsAgeDays=36; redirected=sub-domain; status=200; mimeType=text/html; title=Infoblox Threat Intel - Threat Intelligence for DNS}
-scanner   : @{country=gb}
-stats     : @{IPv6Percentage=0; adBlocked=0; domainStats=System.Object[]; ipStats=System.Object[]; malicious=0; protocolStats=System.Object[]; regDomainStats=System.Object[]; resourceStats=System.Object[]; securePercentage=97; secureRequests=142; serverStats=System.Object[]; tlsStats=System.Object[]; 
-            totalLinks=32; uniqCountries=5}
-submitter : @{country=GB}
-task      : @{apexDomain=infoblox.com; domain=infoblox.com; method=api; source=4e882e8b; tags=System.Object[]; time=6/14/2024 2:28:58 PM; url=https://infoblox.com/threat-intel; uuid=16e64fe3-684e-4a35-8d3b-dc2880b6e04b; visibility=private; 
-            reportURL=https://urlscan.io/result/16e64fe3-684e-4a35-8d3b-dc2880b6e04b/; screenshotURL=https://urlscan.io/screenshots/16e64fe3-684e-4a35-8d3b-dc2880b6e04b.png; domURL=https://urlscan.io/dom/16e64fe3-684e-4a35-8d3b-dc2880b6e04b/}
-verdicts  : @{overall=; urlscan=; engines=; community=}
-```
-
 ## PARAMETERS
 
 ### -Query
 The Query to send to URLScan.io, such as 'domain:mydomain.com'.
-Searchable fields can be found in URLScan.io documentation located here: https://urlscan.io/docs/search/
 
 ```yaml
 Type: String
-Parameter Sets: Query
+Parameter Sets: (All)
 Aliases:
 
-Required: False
-Position: Named
+Required: True
+Position: 1
 Default value: None
 Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Scan
-The URL to use when submitting a new scan request.
-
-```yaml
-Type: String
-Parameter Sets: Scan
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Watch
-Use the -Watch parameter to get a live feed of recent scans from URLScan.io
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: Watch
-Aliases:
-
-Required: False
-Position: Named
-Default value: False
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Visibility
-The visibility to use when submitting a new scan request (public/unlisted/private).
-Default is 'public'.
-Only used when -Scan is specified.
-
-```yaml
-Type: String
-Parameter Sets: Scan
-Aliases:
-
-Required: False
-Position: Named
-Default value: Public
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -SourceCountry
-{{ Fill SourceCountry Description }}
-
-```yaml
-Type: String
-Parameter Sets: Scan
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -WaitForScan
-The -WaitForScan parameter will wait for the scan to complete, then return the results.
-If this parameter is not set, the scan submission will be sent and you will have the UUID returned.
-This UUID must be passed to -UUID to get the results, upon scan completion.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: Scan
-Aliases:
-
-Required: False
-Position: Named
-Default value: False
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -UUID
-The UUID for the results you want to retrieve.
-
-```yaml
-Type: String
-Parameter Sets: Result
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
@@ -232,11 +98,11 @@ Only used when -Query is specified.
 
 ```yaml
 Type: Int32
-Parameter Sets: Query
+Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 2
 Default value: 100
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -250,11 +116,11 @@ Only used when -Query is specified.
 
 ```yaml
 Type: Int32
-Parameter Sets: Query
+Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 3
 Default value: 100
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -271,7 +137,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 4
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -283,11 +149,11 @@ Only used when -Query is specified.
 
 ```yaml
 Type: Int32
-Parameter Sets: Query
+Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 5
 Default value: 5
 Accept pipeline input: False
 Accept wildcard characters: False
