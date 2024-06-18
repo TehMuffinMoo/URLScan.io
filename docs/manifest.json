@@ -1,6 +1,6 @@
 {
   "Name": "URLScan.io",
-  "Version": "1.0.0.4",
+  "Version": "1.0.0.5",
   "Description": "URLScan.io PowerShell Module",
   "Author": "Mat Cox",
   "ProjectUri": "https://github.com/TehMuffinMoo/URLScan.io",
@@ -8,5 +8,5 @@
   "ReleaseNotes": "https://psurlscanio.readthedocs.io/en/latest/Change%20Log/",
   "CompanyName": "TMM Networks",
   "Copyright": "(c) 2021-2024 Mat Cox. All rights reserved.",
-  "Count": 3
+  "Count": 7
 }
