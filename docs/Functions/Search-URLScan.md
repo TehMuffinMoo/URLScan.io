@@ -5,44 +5,48 @@ online version:
 schema: 2.0.0
 ---
 
-# Invoke-URLScan
+# Search-URLScan
 
 ## SYNOPSIS
-This function is a generic wrapper for URLScan.io
+This function is used to perform a search query against URLScan.io
 
 ## SYNTAX
 
-### Query
 ```
-Invoke-URLScan [-Query <String>] [-Size <Int32>] [-PageSize <Int32>] [-APIKey <String>]
- [-RateLimitPause <Int32>] [<CommonParameters>]
-```
-
-### Scan
-```
-Invoke-URLScan [-Scan <String>] [-Visibility <String>] [-SourceCountry <String>] [-WaitForScan]
- [-APIKey <String>] [<CommonParameters>]
-```
-
-### Watch
-```
-Invoke-URLScan [-Watch] [-APIKey <String>] [<CommonParameters>]
-```
-
-### Result
-```
-Invoke-URLScan [-UUID <String>] [-APIKey <String>] [<CommonParameters>]
+Search-URLScan [-Query] <String> [[-Size] <Int32>] [[-PageSize] <Int32>] [[-APIKey] <String>]
+ [[-RateLimitPause] <Int32>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-This function enables you to make queries to URLScan.io, includes parameters for using an API Key, result count and results paging.
-This will also take into account the rate limiting whilst making queries, ensuring you don't hit limits.
+This function is used to perform a search query against URLScan.io.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 ```powershell
-$Results = Invoke-URLScan -Query 'domain:google.com' -Size 300
+Search-URLScan -Query 'task.url:google.com AND country:gb AND page.server:nginx' | Select-Object -ExpandProperty task | ft -AutoSize
+
+(100/100): Querying URLScan.io..
+
+visibility method    domain                                                 apexDomain                  time                   uuid                                 url
+---------- ------    ------                                                 ----------                  ----                   ----                                 ---
+public     manual    google.com                                             google.com                  5/16/2024 5:33:33 AM   42e9e5ec-e10e-441d-be9a-99865a2ae0ad https://google.com/amp/s/lido.community
+public     api       www.hvacrecruitment.com                                hvacrecruitment.com         4/15/2024 1:07:20 PM   4159106e-f034-47b0-8a66-5c0145cceb04 https://www.hvacrecruitment.com/helpdesk-recruitment-agency?source=google.com
+public     api       www1-google.com                                        www1-google.com             4/15/2024 6:59:00 AM   d307c542-1445-4dee-a7e2-1045fcd72d3b http://www1-google.com/
+public     manual    google.com                                             google.com                  3/31/2024 7:32:44 PM   72b7e643-7134-4563-a2a5-eb2621156117 https://google.com/amp/s/coinmarketcap.network
+public     manual    google.com                                             google.com                  3/28/2024 6:47:27 AM   4433dc67-2b4c-4b47-927d-6b36d2fe7534 https://google.com/amp/s/lido.fi.accelerator-program.support
+public     manual    google.com                                             google.com                  3/27/2024 6:17:43 AM   d14d8e14-7ef8-442f-81c6-3e2ce5ce21e1 https://google.com/amp/s/lido.fi.accelerator-program.support
+public     manual    google.com                                             google.com                  3/23/2024 7:52:49 AM   7820fbc1-6c44-409b-a099-3d2d58d059f1 https://google.com/amp/s/t2m.io/abjriGb?Claim-500USDT-Voucher
+public     manual    google.com                                             google.com                  3/22/2024 8:16:39 PM   31b9a33b-b0cd-4cd5-83e5-1804ac1f8a95 https://google.com/amp/s/mailserver.promo?Claim-Voucher
+public     manual    google.com                                             google.com                  3/11/2024 11:35:33 AM  482b916d-57e8-4e3c-9748-c1d9d95f9880 https://google.com/amp/s/mailing-database.com
+public     manual    google.com                                             google.com                  2/28/2024 12:47:37 AM  f03c344b-d2cc-4f38-93df-50b3a74e9465 https://google.com/amp/s/insights-ripple.com
+public     manual    google.com                                             google.com                  2/27/2024 9:15:42 PM   3299b0b9-e1e9-4f0a-b99e-f2d1833fc4dd https://google.com/amp/s/insights-ripple.com
+...
+```
+
+### EXAMPLE 2
+```powershell
+$Results = Search-URLScan -Query 'domain:google.com' -Size 300
     
 Query Size Exceeds Page Size 100. Enabling paging of results..
 (100/300): Querying URLScan.io..
@@ -71,27 +75,6 @@ public     automatic nalozhka.nalozhka.www.kwid9.24-hour-sewer-service2.xyz     
 ...
 ```
 
-### EXAMPLE 2
-```powershell
-Invoke-URLScan -Scan 'https://infoblox.com/threat-intel' -Visibility private -APIKey $URLScanAPIKey -WaitForScan
-Waiting for scan results..
-Waiting for scan results..
-Waiting for scan results..
-
-data      : @{requests=System.Object[]; cookies=System.Object[]; console=System.Object[]; links=System.Object[]; timing=; globals=System.Object[]}
-lists     : @{ips=System.Object[]; countries=System.Object[]; asns=System.Object[]; domains=System.Object[]; servers=System.Object[]; urls=System.Object[]; linkDomains=System.Object[]; certificates=System.Object[]; hashes=System.Object[]}
-meta      : @{processors=}
-page      : @{asn=AS54113; asnname=FASTLY, US; city=Frankfurt am Main; country=DE; domain=www.infoblox.com; ip=146.75.122.253; server=nginx; url=https://www.infoblox.com/threat-intel/; apexDomain=infoblox.com; umbrellaRank=897192; tlsIssuer=R3; tlsValidFrom=5/9/2024 3:27:21 AM; tlsValidDays=89; 
-            tlsAgeDays=36; redirected=sub-domain; status=200; mimeType=text/html; title=Infoblox Threat Intel - Threat Intelligence for DNS}
-scanner   : @{country=gb}
-stats     : @{IPv6Percentage=0; adBlocked=0; domainStats=System.Object[]; ipStats=System.Object[]; malicious=0; protocolStats=System.Object[]; regDomainStats=System.Object[]; resourceStats=System.Object[]; securePercentage=97; secureRequests=142; serverStats=System.Object[]; tlsStats=System.Object[]; 
-            totalLinks=32; uniqCountries=5}
-submitter : @{country=GB}
-task      : @{apexDomain=infoblox.com; domain=infoblox.com; method=api; source=4e882e8b; tags=System.Object[]; time=6/14/2024 2:28:58 PM; url=https://infoblox.com/threat-intel; uuid=16e64fe3-684e-4a35-8d3b-dc2880b6e04b; visibility=private; 
-            reportURL=https://urlscan.io/result/16e64fe3-684e-4a35-8d3b-dc2880b6e04b/; screenshotURL=https://urlscan.io/screenshots/16e64fe3-684e-4a35-8d3b-dc2880b6e04b.png; domURL=https://urlscan.io/dom/16e64fe3-684e-4a35-8d3b-dc2880b6e04b/}
-verdicts  : @{overall=; urlscan=; engines=; community=}
-```
-
 ## PARAMETERS
 
 ### -Query
@@ -99,108 +82,13 @@ The Query to send to URLScan.io, such as 'domain:mydomain.com'.
 
 ```yaml
 Type: String
-Parameter Sets: Query
+Parameter Sets: (All)
 Aliases:
 
-Required: False
-Position: Named
+Required: True
+Position: 1
 Default value: None
 Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Scan
-The URL to use when submitting a new scan request.
-
-```yaml
-Type: String
-Parameter Sets: Scan
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Watch
-Use the -Watch parameter to get a live feed of recent scans from URLScan.io
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: Watch
-Aliases:
-
-Required: False
-Position: Named
-Default value: False
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Visibility
-The visibility to use when submitting a new scan request (public/unlisted/private).
-Default is 'public'.
-Only used when -Scan is specified.
-
-```yaml
-Type: String
-Parameter Sets: Scan
-Aliases:
-
-Required: False
-Position: Named
-Default value: Public
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -SourceCountry
-The source country to use when submitting a new scan request.
-Only used when -Scan is specified.
-
-```yaml
-Type: String
-Parameter Sets: Scan
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -WaitForScan
-The -WaitForScan parameter will wait for the scan to complete, then return the results.
-If this parameter is not set, the scan submission will be sent and you will have the UUID returned.
-This UUID must be passed to -UUID to get the results, upon scan completion.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: Scan
-Aliases:
-
-Required: False
-Position: Named
-Default value: False
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -UUID
-The UUID for the results you want to retrieve.
-
-```yaml
-Type: String
-Parameter Sets: Result
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
@@ -210,11 +98,11 @@ Only used when -Query is specified.
 
 ```yaml
 Type: Int32
-Parameter Sets: Query
+Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 2
 Default value: 100
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -228,11 +116,11 @@ Only used when -Query is specified.
 
 ```yaml
 Type: Int32
-Parameter Sets: Query
+Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 3
 Default value: 100
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -241,6 +129,7 @@ Accept wildcard characters: False
 ### -APIKey
 The -APIKey parameter enables you to specify an API Key if you have an account with URLScan.io.
 This will enable higher query limits and larger page sizes.
+This is only necessary if your API Key has not been saved using Set-URLScanConfiguration
 
 ```yaml
 Type: String
@@ -248,7 +137,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 4
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -260,11 +149,11 @@ Only used when -Query is specified.
 
 ```yaml
 Type: Int32
-Parameter Sets: Query
+Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 5
 Default value: 5
 Accept pipeline input: False
 Accept wildcard characters: False

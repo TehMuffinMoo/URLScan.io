@@ -1,2 +1,4 @@
-- Improve version checking when multiple versions are installed
-- Add missing misc function for detecting OS
+- Add specific `Watch-URLScan` function for watching/tailing the live feed of URLScan.io submissions
+- Add specific `New-URLScan` function to improve new URLScan.io submissions
+- Add specific `Get-URLScan` function to improve retrieving URLScan.io submissions
+- Add `Get-URLScanQuota` function for checking Rate Limit Quota
