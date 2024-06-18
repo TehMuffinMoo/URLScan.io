@@ -70,7 +70,8 @@ Description = 'URLScan.io PowerShell Module'
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
 FunctionsToExport = 'Get-URLScanConfiguration', 'Invoke-URLScan', 
-               'Set-URLScanConfiguration'
+               'Set-URLScanConfiguration', 'New-URLScan', 'Watch-URLScan',
+               'Get-URLScanQuota'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
