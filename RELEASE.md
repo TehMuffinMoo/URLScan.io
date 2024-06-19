@@ -1,3 +1,3 @@
-- Add `-Domain`, `-IP`, `-Country`, `-Server`, `-Hash`, `-FileName`, `-ASN`, `-ASNName` & `-Strict` parameters to `Search-URLScan`
+- Add `-Domain`, `-IP`, `-Country`, `-Server`, `-Hash`, `-FileName`, `-ASN`, `-ASNName`, `-Strict` & `-Silent` parameters to `Search-URLScan`
 - Add `-ReturnAll` parameter to `Search-URLScan` to return all related results via paging
 - Rename `-Size` parameter to `-Limit` to avoid overlapping parameter names when using pipeline

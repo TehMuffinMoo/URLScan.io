@@ -49,6 +49,9 @@ function Search-URLScan {
     .PARAMETER RateLimitPause
         The -RateLimitPause parameter is used to define the minimum percentage that can be reached of the allowable rate limit before queries are paused.
 
+    .PARAMETER Silent
+        The -Silent parameter is used to silence the Write-Host messages returned during scans.
+
     .PARAMETER APIKey
         The -APIKey parameter enables you to specify an API Key if you have an account with URLScan.io. This will enable higher query limits and larger page sizes.
         This is only necessary if your API Key has not been saved using Set-URLScanConfiguration
@@ -170,6 +173,7 @@ function Search-URLScan {
         [Int]$PageSize = 100,
         [Switch]$Strict,
         [Switch]$ReturnAll,
+        [Switch]$Silent,
         [String]$APIKey,
         [Int]$RateLimitPause = 5
     )
@@ -185,7 +189,7 @@ function Search-URLScan {
         if (($Limit -gt $PageSize) -or $ReturnAll) {
             $QuerySize = $PageSize
             if (!($ReturnAll)) {
-                Write-Host "Query Size Exceeds Page Size $($PageSize). Enabling paging of results.."
+                if (!($Silent)) { Write-Host "Query Size Exceeds Page Size $($PageSize). Enabling paging of results.." }
             }
         } else {
             $QuerySize = $Limit
@@ -276,27 +280,29 @@ function Search-URLScan {
                         $TimeoutMessage = "$($TimeoutMinutes) minutes"
                     }
                     ## Write Rate Limiting info
-                    Write-Host "API Rate Limit Almost Reached. Pausing queries for $($TimeoutMessage)." -ForegroundColor Red
-                    Write-Host "Scope         : $($RateLimitInfo.Scope)"
-                    Write-Host "Action        : $($RateLimitInfo.Action)"
-                    Write-Host "Window        : $($RateLimitInfo.Window)"
-                    Write-Host "Limit         : $($RateLimitInfo.Limit)"
-                    Write-Host "Remaining     : $($RateLimitInfo.Remaining)"
-                    Write-Host "Reset Time    : $($RateLimitInfo.'Reset Time')"
-                    Write-Host "Reset Seconds : $($RateLimitInfo.'Reset Seconds')"
+                    if (!($Silent)) {
+                        Write-Host "API Rate Limit Almost Reached. Pausing queries for $($TimeoutMessage)." -ForegroundColor Red
+                        Write-Host "Scope         : $($RateLimitInfo.Scope)"
+                        Write-Host "Action        : $($RateLimitInfo.Action)"
+                        Write-Host "Window        : $($RateLimitInfo.Window)"
+                        Write-Host "Limit         : $($RateLimitInfo.Limit)"
+                        Write-Host "Remaining     : $($RateLimitInfo.Remaining)"
+                        Write-Host "Reset Time    : $($RateLimitInfo.'Reset Time')"
+                        Write-Host "Reset Seconds : $($RateLimitInfo.'Reset Seconds')"
+                    }
                     ## Set timeout based on seconds before rate limiting reset
                     Wait-Event -Timeout $($RateLimitInfo.'Reset Seconds')
                 } elseif ([Int]$($ResultHeaders.'X-Rate-Limit-Remaining') -lt $($RateLimitPercentage * 3)) {
                     ## Slow down events if exceeds >3x of $RateLimitPercentage
                     if ($RateLimitApplied -ne $true) {
-                        Write-Host "API Rate Limit close to being reached. Slowing down queries to every 3 seconds.." -ForegroundColor Yellow
+                        if (!($Silent)) {  Write-Host "API Rate Limit close to being reached. Slowing down queries to every 3 seconds.." -ForegroundColor Yellow }
                         $RateLimitApplied = $true
                     }
                     Wait-Event -Timeout 3
                 } else {
                     ## Reset throttled rate limiting
                     if ($RateLimitApplied -eq $true) {
-                        Write-Host "API Rate Limit is now OK. Returning to normal query speed.." -ForegroundColor Yellow
+                        if (!($Silent)) { Write-Host "API Rate Limit is now OK. Returning to normal query speed.." -ForegroundColor Yellow }
                         $RateLimitApplied = $false
                     }
                 }
@@ -311,7 +317,7 @@ function Search-URLScan {
             if (($JSONResult.results.count -lt $PageSize) -and ($JSONResult.results.count -ne $Limit)) {
                 ## Further checks to see if paging is required, based on hard set result limits by the API.
                 if ($JSONResult.results.count -in @('100','1000','10000')) {
-                    Write-Host "Requested Page Size: $($PageSize) but only $($JSONResult.results.count) results returned. Adjusting page size to: $($JSONResult.results.count)" -ForegroundColor Yellow
+                    if (!($Silent)) { Write-Host "Requested Page Size: $($PageSize) but only $($JSONResult.results.count) results returned. Adjusting page size to: $($JSONResult.results.count)" -ForegroundColor Yellow }
                     $PageSize = $JSONResult.results.count
                     $QuerySize = $PageSize
                 } else {
@@ -327,15 +333,15 @@ function Search-URLScan {
                 ## Write Visible Count
                 if (!($ReturnAll)) {
                     if (($JSONResult.results.Count -lt $PageSize) -or ($JSONResult.results.Count -eq $Limit)) {
-                        Write-Host "($($Results.Count)/$($Results.Count)): URLScan.io Results Returned." -ForegroundColor Green
+                        if (!($Silent)) { Write-Host "($($Results.Count)/$($Results.Count)): URLScan.io Results Returned." -ForegroundColor Green }
                     } else {
-                        Write-Host "($($Results.Count)/$($Limit)): URLScan.io Results Returned.." -ForegroundColor Cyan
+                        if (!($Silent)) { Write-Host "($($Results.Count)/$($Limit)): URLScan.io Results Returned.." -ForegroundColor Cyan }
                     }
                 } else {
                     if ($JSONResult.results.Count -lt $PageSize) {
-                        Write-Host "($($Results.Count)/$($Results.Count)): All URLScan.io Results Returned." -ForegroundColor Green
+                        if (!($Silent)) { Write-Host "($($Results.Count)/$($Results.Count)): All URLScan.io Results Returned." -ForegroundColor Green }
                     } else {
-                        Write-Host "($($Results.Count)/??): URLScan.io Results Returned.." -ForegroundColor Cyan
+                        if (!($Silent)) { Write-Host "($($Results.Count)/??): URLScan.io Results Returned.." -ForegroundColor Cyan }
                     }
                 }
 
