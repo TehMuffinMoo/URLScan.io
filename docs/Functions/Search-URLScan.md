@@ -34,7 +34,7 @@ This function is used to perform a search query against URLScan.io.
 ```powershell
 Search-URLScan -Query 'task.url:google.com AND country:gb AND page.server:nginx' | Select-Object -ExpandProperty task | ft -AutoSize
 
-(100/100): Querying URLScan.io..
+(94/94): URLScan.io Results Returned.
 
 visibility method    domain                                                 apexDomain                  time                   uuid                                 url
 ---------- ------    ------                                                 ----------                  ----                   ----                                 ---
@@ -55,11 +55,9 @@ public     manual    google.com                                             goog
 ### EXAMPLE 2
 ```powershell
 $Results = Search-URLScan -Domain 'google.com' -Limit 300
-    
+
 Query Size Exceeds Page Size 100. Enabling paging of results..
-(100/300): Querying URLScan.io..
-(200/300): Querying URLScan.io..
-(300/300): Querying URLScan.io..
+(300/300): URLScan.io Results Returned..
 
 $Results.task | ft -AutoSize              
 
@@ -88,16 +86,7 @@ public     automatic nalozhka.nalozhka.www.kwid9.24-hour-sewer-service2.xyz     
 ## Return All Results for selected query
 PS> $Results = Search-URLScan -Domain 'bbc.co.uk' -Strict -ReturnAll -PageSize 1000
 
-(1000/??): Querying URLScan.io..
-(2000/??): Querying URLScan.io..                                                                                        
-(3000/??): Querying URLScan.io..                                                                                        
-(4000/??): Querying URLScan.io..                                                                                        
-(5000/??): Querying URLScan.io..                                                                                        
-(6000/??): Querying URLScan.io..                                                                                        
-(7000/??): Querying URLScan.io..                                                                                        
-(8000/??): Querying URLScan.io..                                                                                        
-(9000/??): Querying URLScan.io..                                                                                        
-(10000/??): Querying URLScan.io..
+(9027/9027): All URLScan.io Results Returned.
 ```
 
 ## PARAMETERS
