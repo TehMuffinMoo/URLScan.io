@@ -77,7 +77,7 @@ function Search-URLScan {
         ...
 
     .EXAMPLE
-        PS> $Results = Search-URLScan -Domain 'google.com' -Size 300
+        PS> $Results = Search-URLScan -Domain 'google.com' -Limit 300
             
         Query Size Exceeds Page Size 100. Enabling paging of results..
         (100/300): Querying URLScan.io..
