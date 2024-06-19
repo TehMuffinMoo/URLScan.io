@@ -7,16 +7,50 @@ function Search-URLScan {
         This function is used to perform a search query against URLScan.io.
 
     .PARAMETER Query
-        The Query to send to URLScan.io, such as 'domain:mydomain.com'.
+        The ElasticSearch Query to send to URLScan.io, such as 'domain:mydomain.com'.
+        A full list of available search parameters can be found here: https://urlscan.io/docs/search/
+
+    .PARAMETER Domain
+        Filter the results by domain. This filters by 'domain' by default, or 'page.domain' when -Strict is specified.
+
+    .PARAMETER IP
+        Filter the results by IP. This filters by 'ip' by default, or 'page.ip' when -Strict is specified.
+
+    .PARAMETER Country
+        Filter the results by Country. This filters by 'country' by default, or 'page.country' when -Strict is specified.
+
+    .PARAMETER Server
+        Filter the results by the HTTP 'Server' header. This filters by 'server' by default, or 'page.server' when -Strict is specified.
+
+    .PARAMETER Hash
+        Filter the results by the SHA256 hash of any HTTP response
+
+    .PARAMETER FileName
+        Filter the results by the filename of any URL that was requested
+
+    .PARAMETER ASN
+        Filter the results by ASN Number. This filters by 'asn' by default, or 'page.asn' when -Strict is specified.
+
+    .PARAMETER ASNName
+        Filter the results by ASN Name. This filters by 'asnname' by default, or 'page.asnname' when -Strict is specified.
+
+    .PARAMETER Strict
+        Enable strict checking of filter parameters. By default, results will be returned when the the filter has been found or called from anywhere within the requested URL.
         
-    .PARAMETER Size
-        The quantity of results you want to return. Only used when -Query is specified.
+    .PARAMETER Limit
+        The quantity of results you want to return.
 
     .PARAMETER PageSize
-        The number of results to return in a single request. This defaults to 100 for Free/Unregistered users. If you have a subscription, this can be increased in-line with your subscription allowance when specifying an API Key. Only used when -Query is specified.
+        The number of results to return in a single request. This defaults to 100 for Free/Unregistered users. If you have a subscription, this can be increased in-line with your subscription allowance when specifying an API Key.
+
+    .PARAMETER ReturnAll
+        Return all results for your search. This could take an excessively long time and eat away at your API allowance, so use with caution.
 
     .PARAMETER RateLimitPause
-        The -RateLimitPause parameter is used to define the minimum percentage that can be reached of the allowable rate limit before queries are paused. Only used when -Query is specified.
+        The -RateLimitPause parameter is used to define the minimum percentage that can be reached of the allowable rate limit before queries are paused.
+
+    .PARAMETER Silent
+        The -Silent parameter is used to silence the Write-Host messages returned during scans.
 
     .PARAMETER APIKey
         The -APIKey parameter enables you to specify an API Key if you have an account with URLScan.io. This will enable higher query limits and larger page sizes.
@@ -43,7 +77,7 @@ function Search-URLScan {
         ...
 
     .EXAMPLE
-        PS> $Results = Search-URLScan -Query 'domain:google.com' -Size 300
+        PS> $Results = Search-URLScan -Domain 'google.com' -Limit 300
             
         Query Size Exceeds Page Size 100. Enabling paging of results..
         (100/300): Querying URLScan.io..
@@ -71,125 +105,237 @@ function Search-URLScan {
         public     automatic nalozhka.nalozhka.www.kwid9.24-hour-sewer-service2.xyz           24-hour-sewer-service2.xyz                         16/06/2024 08:43:29 43a55c3b-22a6-4e0a-bf36-d8902fbfa062 https://nalozhka.nalozhka.www.kwid9.24-hour-sewer-service2.…
         ...
 
+    .EXAMPLE
+        ## Return All Results for selected query
+        PS> $Results = Search-URLScan -Domain 'bbc.co.uk' -Strict -ReturnAll -PageSize 1000
+
+        (1000/??): Querying URLScan.io..
+        (2000/??): Querying URLScan.io..                                                                                        
+        (3000/??): Querying URLScan.io..                                                                                        
+        (4000/??): Querying URLScan.io..                                                                                        
+        (5000/??): Querying URLScan.io..                                                                                        
+        (6000/??): Querying URLScan.io..                                                                                        
+        (7000/??): Querying URLScan.io..                                                                                        
+        (8000/??): Querying URLScan.io..                                                                                        
+        (9000/??): Querying URLScan.io..                                                                                        
+        (10000/??): Querying URLScan.io..
+
     .FUNCTIONALITY
         URLScan.io
     #>
     param(
-        [Parameter(Mandatory=$true)]
+        [Parameter(ParameterSetName='Query',Mandatory=$true)]
         [String]$Query,
-        [Int]$Size = 100,
+        [Parameter(ParameterSetName='Filters')]
+        [String]$Domain,
+        [Parameter(ParameterSetName='Filters')]
+        [String]$IP,
+        [Parameter(ParameterSetName='Filters')]
+        [String]$Country,
+        [Parameter(ParameterSetName='Filters')]
+        [String]$Server,
+        [Parameter(ParameterSetName='Filters')]
+        [String]$Hash,
+        [Parameter(ParameterSetName='Filters')]
+        [String]$Filename,
+        [Parameter(ParameterSetName='Filters')]
+        [String]$ASN,
+        [Parameter(ParameterSetName='Filters')]
+        [String]$ASNName,
+        [Int]$Limit,
         [Int]$PageSize = 100,
+        [Switch]$Strict,
+        [Switch]$ReturnAll,
+        [Switch]$Silent,
         [String]$APIKey,
         [Int]$RateLimitPause = 5
     )
-    $Headers = Get-URLScanHeaders -APIKey $($APIKey)
 
-    ## Check if Default Page Size has been set
-    if ($ENV:URLScanPageLimit) {
-        $PageSize = $ENV:URLScanPageLimit
-    }
-
-    ## If Size > PageSize, enable paging of results
-    if ($Size -gt $PageSize) {
-        $QuerySize = $PageSize
-        Write-Host "Query Size Exceeds Page Size $($PageSize). Enabling paging of results.."
-    } else {
-        $QuerySize = $Size
-    }
-
-    ## Initilize Result Count and Results Array
-    $ResultCount = 0
-    $Results = @()
-
-    while ($ResultCount -lt $Size) {
-        ## Check if Result Count + Page Size is Greater than requested results.
-        ## If so, adjust the Query Size accordingly to ensure the correct number of results.
-        if ($ResultCount+$PageSize -gt $Size) {
-            $QuerySize = $Size-$ResultCount
+    begin {
+        if ($Limit -and $ReturnAll) {
+            Write-Error "-Limit & -ReturnAll are mutually exclusive parameters."
+            break
+        } elseif (!($Limit)) {
+            $Limit = 100
         }
-        ## Check if the requested size is greater than the query size.
-        ## If so, adjust the visible count accordingly.
-        if ($Size -gt $QuerySize) {
-            $ResultCountVisible = $ResultCount+$QuerySize
+
+        $Headers = Get-URLScanHeaders -APIKey $($APIKey)
+        
+        ## Check if Default Page Size has been set
+        if ($ENV:URLScanPageLimit) {
+            $PageSize = $ENV:URLScanPageLimit
+        }
+
+        ## If Size > PageSize, enable paging of results
+        if (($Limit -gt $PageSize) -or $ReturnAll) {
+            $QuerySize = $PageSize
+            if (!($ReturnAll)) {
+                if (!($Silent)) { Write-Host "Query Size Exceeds Page Size $($PageSize). Enabling paging of results.." -ForegroundColor Blue}
+            }
         } else {
-            $ResultCountVisible = $ResultCount+$Size
+            $QuerySize = $Limit
         }
+    }
 
-        ## If $JSONResult is already populated from previous loop, append the search_after query parameter to enable paging. Rate Limiting is applied here too.
-        if ($JSONResult) {
-            $SearchAfter = "&search_after=$(($JSONResult.results | Select-Object -Last 1).sort -join ",")"
+    process {
 
-            ## Apply Rate Limiting
-            $ResultHeaders = $Result.Headers
-            ## Calculate % of Limit based on $RateLimitPause (Defaults to 5%)
-            $RateLimitPercentage = [Math]::Round((($([Int]$($ResultHeaders.'X-Rate-Limit-Limit'))/100)*$RateLimitPause),1)
-            ## Check if Rate Limiting needs to be applied
-            if ([Int]$($ResultHeaders.'X-Rate-Limit-Remaining') -lt $RateLimitPercentage) {
-                ## Build array of Rate Limiting Info
-                $RateLimitInfo = [PSCustomObject]@{
-                    "Scope" = [String]$($Result.Headers.'X-Rate-Limit-Scope')
-                    "Action" = [String]$($Result.Headers.'X-Rate-Limit-Action')
-                    "Window" = [String]$($Result.Headers.'X-Rate-Limit-Window')
-                    "Limit" = [Int]$($Result.Headers.'X-Rate-Limit-Limit')
-                    "Remaining" = [Int]$($Result.Headers.'X-Rate-Limit-Remaining')
-                    "Reset Time" = [DateTime]"$($Result.Headers.'X-Rate-Limit-Reset')"
-                    "Reset Seconds" = [Int]$($Result.Headers.'X-Rate-Limit-Reset-After')
+        ## Initilize Result Count and Results Array
+        $ResultCount = 0
+        $Results = @()
+
+        ## Initilize Query
+        $QueryFilters = @()
+        $PSBoundParameters.GetEnumerator() | ForEach-Object {
+            try {
+                $Key = $_.Key.ToLower()
+                $Value = $_.Value.ToLower()
+
+                Switch($_.Key) {
+                    Domain { if ($PSBoundParameters.Strict) { $Key = 'page.domain' }; $QueryFilters += $Key + ':' + $Value }
+                    IP { if ($PSBoundParameters.Strict) { $Key = 'page.ip' }; $QueryFilters += $Key + ':' + $Value }
+                    Country { if ($PSBoundParameters.Strict) { $Key = 'page.country' }; $QueryFilters += $Key + ':' + $Value }
+                    Server { if ($PSBoundParameters.Strict) { $Key = 'page.server' }; $QueryFilters += $Key + ':' + $Value }
+                    Hash { $QueryFilters += $Key + ':' + $Value }
+                    Filename { $QueryFilters += $Key + ':' + $Value }
+                    ASN { if ($PSBoundParameters.Strict) { $Key = 'page.asn' }; $QueryFilters += $Key + ':' + $Value }
+                    ASNName { if ($PSBoundParameters.Strict) { $Key = 'page.asnname' }; $QueryFilters += $Key + ':' + $Value }
                 }
-                ## Set the timeout minutes/seconds to be displayed
-                $TimeoutMinutes = [Math]::Round($($RateLimitInfo.'Reset Seconds' / 60),2)
-                if ($TimeoutMinutes -lt 1) {
-                    $TimeoutMessage = "$($RateLimitInfo.'Reset Seconds') seconds"
-                } else {
-                    $TimeoutMessage = "$($TimeoutMinutes) minutes"
-                }
-                ## Write Rate Limiting info
-                Write-Host "API Rate Limit Almost Reached. Pausing queries for $($TimeoutMessage)." -ForegroundColor Red
-                Write-Host "Scope         : $($RateLimitInfo.Scope)"
-                Write-Host "Action        : $($RateLimitInfo.Action)"
-                Write-Host "Window        : $($RateLimitInfo.Window)"
-                Write-Host "Limit         : $($RateLimitInfo.Limit)"
-                Write-Host "Remaining     : $($RateLimitInfo.Remaining)"
-                Write-Host "Reset Time    : $($RateLimitInfo.'Reset Time')"
-                Write-Host "Reset Seconds : $($RateLimitInfo.'Reset Seconds')"
-                ## Set timeout based on seconds before rate limiting reset
-                Wait-Event -Timeout $($RateLimitInfo.'Reset Seconds')
-            } elseif ([Int]$($ResultHeaders.'X-Rate-Limit-Remaining') -lt $($RateLimitPercentage * 3)) {
-                ## Slow down events if exceeds >3x of $RateLimitPercentage
-                if ($RateLimitApplied -ne $true) {
-                    Write-Host "API Rate Limit close to being reached. Slowing down queries to every 3 seconds.." -ForegroundColor Yellow
-                    $RateLimitApplied = $true
-                }
-                Wait-Event -Timeout 3
-            } else {
-                ## Reset throttled rate limiting
-                if ($RateLimitApplied -eq $true) {
-                    Write-Host "API Rate Limit is now OK. Returning to normal query speed.." -ForegroundColor Yellow
-                    $RateLimitApplied = $false
-                }
+            } catch {
+                ## Ignore
             }
         }
-
-        ## Write Visible Count
-        Write-Host "($($ResultCountVisible)/$($Size)): Querying URLScan.io.."
-        $Result = Invoke-WebRequest -Method GET -Uri "https://urlscan.io/api/v1/search/?q=$($Query)&size=$($QuerySize)$($SearchAfter)" -Headers $Headers
-
-        $JSONResult = $Result.Content | ConvertFrom-Json
-
-        if ($JSONResult.results.count -lt $PageSize) {
-            Write-Host "Requested Page Size: $($PageSize) but only $($JSONResult.results.count) results returned. Adjusting page size to: $($JSONResult.results.count)" -ForegroundColor Yellow
-            $PageSize = $JSONResult.results.count
-            $ResultCountVisible = $PageSize
-            $QuerySize = $PageSize
+        if ($PSCmdlet.ParameterSetName -eq 'Filters') {
+            if ($QueryFilters.Count -ge 2) {
+                $Query = $QueryFilters -join ' AND '
+            } else {
+                $Query = $QueryFilters
+            }
         }
+        while ($true) {
+            if (!($ReturnAll)) {
+                if (($ResultCount -ge $Limit) -or ($EndOfPaging)) {
+                    break
+                }
+            } else {
+                if ($AllResultsReturned) {
+                    break
+                }
+            }
+            ## Check if -ReturnAll has been specified.
+            if (!($ReturnAll)) {
+                ## Check if $Limit is less than $PageSize, and adjust page size accordingly.
+                if ($Limit -lt $PageSize) {
+                    $PageSize = $Limit
+                }
+            }
+            ## Check if Result Count + Page Size is Greater than requested results.
+            ## If so, adjust the Query Size accordingly to ensure the correct number of results.
+            if (($ResultCount+$PageSize -gt $Limit) -and (!($ReturnAll))) {
+                $QuerySize = $Limit-$ResultCount
+            }
 
-        if ($JSONResult.results) {
-            ## Append results to Array
-            $Results += $JSONResult.results
-            ## Increment Result Count for loop tracking
-            $ResultCount += $JSONResult.results.count
-        } else {
-            break
+            ## If $JSONResult is already populated from previous loop, append the search_after query parameter to enable paging. Rate Limiting is applied here too.
+            if ($JSONResult) {
+                $SearchAfter = "&search_after=$(($JSONResult.results | Select-Object -Last 1).sort -join ",")"
+
+                ## Apply Rate Limiting
+                $ResultHeaders = $Result.Headers
+                ## Calculate % of Limit based on $RateLimitPause (Defaults to 5%)
+                $RateLimitPercentage = [Math]::Round((($([Int]$($ResultHeaders.'X-Rate-Limit-Limit'))/100)*$RateLimitPause),1)
+                ## Check if Rate Limiting needs to be applied
+                if ([Int]$($ResultHeaders.'X-Rate-Limit-Remaining') -lt $RateLimitPercentage) {
+                    ## Build array of Rate Limiting Info
+                    $RateLimitInfo = [PSCustomObject]@{
+                        "Scope" = [String]$($Result.Headers.'X-Rate-Limit-Scope')
+                        "Action" = [String]$($Result.Headers.'X-Rate-Limit-Action')
+                        "Window" = [String]$($Result.Headers.'X-Rate-Limit-Window')
+                        "Limit" = [Int]$($Result.Headers.'X-Rate-Limit-Limit')
+                        "Remaining" = [Int]$($Result.Headers.'X-Rate-Limit-Remaining')
+                        "Reset Time" = [DateTime]"$($Result.Headers.'X-Rate-Limit-Reset')"
+                        "Reset Seconds" = [Int]$($Result.Headers.'X-Rate-Limit-Reset-After')
+                    }
+                    ## Set the timeout minutes/seconds to be displayed
+                    $TimeoutMinutes = [Math]::Round($($RateLimitInfo.'Reset Seconds' / 60),2)
+                    if ($TimeoutMinutes -lt 1) {
+                        $TimeoutMessage = "$($RateLimitInfo.'Reset Seconds') seconds"
+                    } else {
+                        $TimeoutMessage = "$($TimeoutMinutes) minutes"
+                    }
+                    ## Write Rate Limiting info
+                    if (!($Silent)) {
+                        Write-Host "API Rate Limit Almost Reached. Pausing queries for $($TimeoutMessage)." -ForegroundColor Red
+                        Write-Host "Scope         : $($RateLimitInfo.Scope)"
+                        Write-Host "Action        : $($RateLimitInfo.Action)"
+                        Write-Host "Window        : $($RateLimitInfo.Window)"
+                        Write-Host "Limit         : $($RateLimitInfo.Limit)"
+                        Write-Host "Remaining     : $($RateLimitInfo.Remaining)"
+                        Write-Host "Reset Time    : $($RateLimitInfo.'Reset Time')"
+                        Write-Host "Reset Seconds : $($RateLimitInfo.'Reset Seconds')"
+                    }
+                    ## Set timeout based on seconds before rate limiting reset
+                    Wait-Event -Timeout $($RateLimitInfo.'Reset Seconds')
+                } elseif ([Int]$($ResultHeaders.'X-Rate-Limit-Remaining') -lt $($RateLimitPercentage * 3)) {
+                    ## Slow down events if exceeds >3x of $RateLimitPercentage
+                    if ($RateLimitApplied -ne $true) {
+                        if (!($Silent)) {  Write-Host "API Rate Limit close to being reached. Slowing down queries to every 3 seconds.." -ForegroundColor Yellow }
+                        $RateLimitApplied = $true
+                    }
+                    Wait-Event -Timeout 3
+                } else {
+                    ## Reset throttled rate limiting
+                    if ($RateLimitApplied -eq $true) {
+                        if (!($Silent)) { Write-Host "API Rate Limit is now OK. Returning to normal query speed.." -ForegroundColor Yellow }
+                        $RateLimitApplied = $false
+                    }
+                }
+            }
+
+            $Result = Invoke-WebRequest -Method GET -Uri "https://urlscan.io/api/v1/search/?q=$($Query)&size=$($QuerySize)$($SearchAfter)" -Headers $Headers
+
+            $JSONResult = $Result.Content | ConvertFrom-Json
+
+            ## Check if Result Count is less than requested page size, and additionally if the Result Count is not equal to the requested number of results.
+            ## This would indicate that paging is necessary.
+            if (($JSONResult.results.count -lt $PageSize) -and ($JSONResult.results.count -ne $Limit)) {
+                ## Further checks to see if paging is required, based on hard set result limits by the API.
+                if ($JSONResult.results.count -in @('100','1000','10000')) {
+                    if (!($Silent)) { Write-Host "Requested Page Size: $($PageSize) but only $($JSONResult.results.count) results returned. Adjusting page size to: $($JSONResult.results.count)" -ForegroundColor Yellow }
+                    $PageSize = $JSONResult.results.count
+                    $QuerySize = $PageSize
+                } else {
+                    $EndOfPaging = $true
+                    $AllResultsReturned = $true
+                }
+            }
+
+            if ($JSONResult.results) {
+                ## Append results to Array
+                $Results += $JSONResult.results
+
+                ## Write Visible Count
+                if (!($ReturnAll)) {
+                    if (($JSONResult.results.Count -lt $PageSize) -or ($JSONResult.results.Count -eq $Limit)) {
+                        if (!($Silent)) { Write-Host -NoNewLine "`r($($Results.Count)/$($Results.Count)): URLScan.io Results Returned." -ForegroundColor Green }
+                    } else {
+                        if (!($Silent)) { Write-Host -NoNewLine "`r($($Results.Count)/$($Limit)): URLScan.io Results Returned.." -ForegroundColor Cyan }
+                    }
+                } else {
+                    if ($JSONResult.results.Count -lt $PageSize) {
+                        if (!($Silent)) { Write-Host -NoNewLine "`r($($Results.Count)/$($Results.Count)): All URLScan.io Results Returned." -ForegroundColor Green }
+                    } else {
+                        if (!($Silent)) { Write-Host -NoNewLine "`r($($Results.Count)/??): URLScan.io Results Returned.." -ForegroundColor Cyan }
+                    }
+                }
+
+                ## Increment Result Count for loop tracking
+                $ResultCount += $JSONResult.results.count
+            } else {
+                if ($ReturnAll) {
+                    $AllResultsReturned = $true
+                }
+                break
+            }
         }
+        return $Results
     }
-    return $Results
 }
