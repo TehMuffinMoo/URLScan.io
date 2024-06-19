@@ -124,54 +124,40 @@ function Search-URLScan {
         URLScan.io
     #>
     param(
-        [Parameter(
-            Mandatory=$true,
-            ParameterSetName='Query'
-        )]
+        [Parameter(ParameterSetName='ReturnLimit-Query',Mandatory=$true)]
+        [Parameter(ParameterSetName='ReturnAll-Query',Mandatory=$true)]
         [String]$Query,
-        [Parameter(
-            ParameterSetName='Filters',
-            ValueFromPipelineByPropertyName
-        )]
+        [Parameter(ParameterSetName='ReturnLimit-Filters')]
+        [Parameter(ParameterSetName='ReturnAll-Filters')]
         [String]$Domain,
-        [Parameter(
-            ParameterSetName='Filters',
-            ValueFromPipelineByPropertyName
-        )]
+        [Parameter(ParameterSetName='ReturnLimit-Filters')]
+        [Parameter(ParameterSetName='ReturnAll-Filters')]
         [String]$IP,
-        [Parameter(
-            ParameterSetName='Filters',
-            ValueFromPipelineByPropertyName
-        )]
+        [Parameter(ParameterSetName='ReturnLimit-Filters')]
+        [Parameter(ParameterSetName='ReturnAll-Filters')]
         [String]$Country,
-        [Parameter(
-            ParameterSetName='Filters',
-            ValueFromPipelineByPropertyName
-        )]
+        [Parameter(ParameterSetName='ReturnLimit-Filters')]
+        [Parameter(ParameterSetName='ReturnAll-Filters')]
         [String]$Server,
-        [Parameter(
-            ParameterSetName='Filters',
-            ValueFromPipelineByPropertyName
-        )]
+        [Parameter(ParameterSetName='ReturnLimit-Filters')]
+        [Parameter(ParameterSetName='ReturnAll-Filters')]
         [String]$Hash,
-        [Parameter(
-            ParameterSetName='Filters',
-            ValueFromPipelineByPropertyName
-        )]
+        [Parameter(ParameterSetName='ReturnLimit-Filters')]
+        [Parameter(ParameterSetName='ReturnAll-Filters')]
         [String]$Filename,
-        [Parameter(
-            ParameterSetName='Filters',
-            ValueFromPipelineByPropertyName
-        )]
+        [Parameter(ParameterSetName='ReturnLimit-Filters')]
+        [Parameter(ParameterSetName='ReturnAll-Filters')]
         [String]$ASN,
-        [Parameter(
-            ParameterSetName='Filters',
-            ValueFromPipelineByPropertyName
-        )]
+        [Parameter(ParameterSetName='ReturnLimit-Filters')]
+        [Parameter(ParameterSetName='ReturnAll-Filters')]
         [String]$ASNName,
+        [Parameter(ParameterSetName='ReturnLimit-Filters')]
+        [Parameter(ParameterSetName='ReturnLimit-Query')]
         [Int]$Limit = 100,
         [Int]$PageSize = 100,
         [Switch]$Strict,
+        [Parameter(ParameterSetName='ReturnAll-Filters')]
+        [Parameter(ParameterSetName='ReturnAll-Query')]
         [Switch]$ReturnAll,
         [Switch]$Silent,
         [String]$APIKey,
@@ -223,12 +209,13 @@ function Search-URLScan {
                 ## Ignore
             }
         }
-        if ($QueryFilters.Count -ge 2) {
-            $Query = $QueryFilters -join ' AND '
-        } else {
-            $Query = $QueryFilters
+        if ($PSCmdlet.ParameterSetName -eq 'Filters') {
+            if ($QueryFilters.Count -ge 2) {
+                $Query = $QueryFilters -join ' AND '
+            } else {
+                $Query = $QueryFilters
+            }
         }
-
         while ($true) {
             if (!($ReturnAll)) {
                 if (($ResultCount -ge $Limit) -or ($EndOfPaging)) {
