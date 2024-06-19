@@ -13,7 +13,8 @@ Used to set URLScan.io specific configuration
 ## SYNTAX
 
 ```
-Set-URLScanConfiguration [[-APIKey] <String>] [[-DefaultPageLimit] <String>] [-Persist]
+Set-URLScanConfiguration [[-APIKey] <String>] [[-DefaultPageLimit] <String>] [[-ScreenshotPath] <String>]
+ [-Persist]
 ```
 
 ## DESCRIPTION
@@ -63,6 +64,21 @@ Aliases:
 
 Required: False
 Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ScreenshotPath
+Optionally configure a default screenshot path for when using Get-URLScanScreenshot & Get-URLScanLiveshot functions.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 3
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

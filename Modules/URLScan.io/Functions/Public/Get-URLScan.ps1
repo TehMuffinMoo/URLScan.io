@@ -82,7 +82,8 @@ function Get-URLScan {
         [ValidateSet('Links','Hashes','IPs','URLs','Cookies','Certificates','Verdicts','Technologies')]
         [String]$Return,
         [ValidateSet('Object','JSON')]
-        [String]$ReturnType = 'Object'
+        [String]$ReturnType = 'Object',
+        [String]$APIKey
     )
     begin {
         $Headers = Get-URLScanHeaders -APIKey $($APIKey)
@@ -183,6 +184,7 @@ function Get-URLScan {
                 }
                 default {
                     $ResultArr = $Results
+                    $ResultArr | Add-Member -MemberType NoteProperty -Name "uuid" -Value $Results.task.uuid
                 }
             }
             Switch($ReturnType) {
