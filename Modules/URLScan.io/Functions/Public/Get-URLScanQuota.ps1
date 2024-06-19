@@ -16,20 +16,20 @@ function Get-URLScanQuota {
     .EXAMPLE
         PS> Get-URLScanQuota
 
-            private                : @{day=; hour=; minute=}
-            public                 : @{day=; hour=; minute=}
-            retrieve               : @{day=; hour=; minute=}
-            search                 : @{day=; hour=; minute=}
-            unlisted               : @{day=; hour=; minute=}
-            livescan               : @{day=; hour=; minute=}
-            liveshot               : @{day=1000; hour=100; minute=10}
-            maxRetentionPeriodDays : 7
-            maxSearchRangeMonths   : 3
-            maxSearchResults       : 1000
-            products               : {}
-            features               : {}
-            queryableFields        : {asn, asnname.*, country, date…}
-            queryVisibility        : {public}
+        private                : @{day=; hour=; minute=}
+        public                 : @{day=; hour=; minute=}
+        retrieve               : @{day=; hour=; minute=}
+        search                 : @{day=; hour=; minute=}
+        unlisted               : @{day=; hour=; minute=}
+        livescan               : @{day=; hour=; minute=}
+        liveshot               : @{day=1000; hour=100; minute=10}
+        maxRetentionPeriodDays : 7
+        maxSearchRangeMonths   : 3
+        maxSearchResults       : 1000
+        products               : {}
+        features               : {}
+        queryableFields        : {asn, asnname.*, country, date…}
+        queryVisibility        : {public}
 
     .FUNCTIONALITY
         URLScan.io
