@@ -12,9 +12,17 @@ This function is used to perform a search query against URLScan.io
 
 ## SYNTAX
 
+### Query
 ```
-Search-URLScan [-Query] <String> [[-Size] <Int32>] [[-PageSize] <Int32>] [[-APIKey] <String>]
- [[-RateLimitPause] <Int32>] [<CommonParameters>]
+Search-URLScan -Query <String> [-Limit <Int32>] [-PageSize <Int32>] [-Strict] [-ReturnAll] [-Silent]
+ [-APIKey <String>] [-RateLimitPause <Int32>] [<CommonParameters>]
+```
+
+### Filters
+```
+Search-URLScan [-Domain <String>] [-IP <String>] [-Country <String>] [-Server <String>] [-Hash <String>]
+ [-Filename <String>] [-ASN <String>] [-ASNName <String>] [-Limit <Int32>] [-PageSize <Int32>] [-Strict]
+ [-ReturnAll] [-Silent] [-APIKey <String>] [-RateLimitPause <Int32>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -46,7 +54,7 @@ public     manual    google.com                                             goog
 
 ### EXAMPLE 2
 ```powershell
-$Results = Search-URLScan -Query 'domain:google.com' -Size 300
+$Results = Search-URLScan -Domain 'google.com' -Limit 300
     
 Query Size Exceeds Page Size 100. Enabling paging of results..
 (100/300): Querying URLScan.io..
@@ -75,26 +83,169 @@ public     automatic nalozhka.nalozhka.www.kwid9.24-hour-sewer-service2.xyz     
 ...
 ```
 
+### EXAMPLE 3
+```powershell
+## Return All Results for selected query
+PS> $Results = Search-URLScan -Domain 'bbc.co.uk' -Strict -ReturnAll -PageSize 1000
+
+(1000/??): Querying URLScan.io..
+(2000/??): Querying URLScan.io..                                                                                        
+(3000/??): Querying URLScan.io..                                                                                        
+(4000/??): Querying URLScan.io..                                                                                        
+(5000/??): Querying URLScan.io..                                                                                        
+(6000/??): Querying URLScan.io..                                                                                        
+(7000/??): Querying URLScan.io..                                                                                        
+(8000/??): Querying URLScan.io..                                                                                        
+(9000/??): Querying URLScan.io..                                                                                        
+(10000/??): Querying URLScan.io..
+```
+
 ## PARAMETERS
 
 ### -Query
-The Query to send to URLScan.io, such as 'domain:mydomain.com'.
+The ElasticSearch Query to send to URLScan.io, such as 'domain:mydomain.com'.
+A full list of available search parameters can be found here: https://urlscan.io/docs/search/
 
 ```yaml
 Type: String
-Parameter Sets: (All)
+Parameter Sets: Query
 Aliases:
 
 Required: True
-Position: 1
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Size
+### -Domain
+Filter the results by domain.
+This filters by 'domain' by default, or 'page.domain' when -Strict is specified.
+
+```yaml
+Type: String
+Parameter Sets: Filters
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -IP
+Filter the results by IP.
+This filters by 'ip' by default, or 'page.ip' when -Strict is specified.
+
+```yaml
+Type: String
+Parameter Sets: Filters
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Country
+Filter the results by Country.
+This filters by 'country' by default, or 'page.country' when -Strict is specified.
+
+```yaml
+Type: String
+Parameter Sets: Filters
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Server
+Filter the results by the HTTP 'Server' header.
+This filters by 'server' by default, or 'page.server' when -Strict is specified.
+
+```yaml
+Type: String
+Parameter Sets: Filters
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Hash
+Filter the results by the SHA256 hash of any HTTP response
+
+```yaml
+Type: String
+Parameter Sets: Filters
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Filename
+Filter the results by the filename of any URL that was requested
+
+```yaml
+Type: String
+Parameter Sets: Filters
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ASN
+Filter the results by ASN Number.
+This filters by 'asn' by default, or 'page.asn' when -Strict is specified.
+
+```yaml
+Type: String
+Parameter Sets: Filters
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ASNName
+Filter the results by ASN Name.
+This filters by 'asnname' by default, or 'page.asnname' when -Strict is specified.
+
+```yaml
+Type: String
+Parameter Sets: Filters
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Limit
 The quantity of results you want to return.
-Only used when -Query is specified.
 
 ```yaml
 Type: Int32
@@ -102,8 +253,8 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 2
-Default value: 100
+Position: Named
+Default value: 0
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -112,7 +263,6 @@ Accept wildcard characters: False
 The number of results to return in a single request.
 This defaults to 100 for Free/Unregistered users.
 If you have a subscription, this can be increased in-line with your subscription allowance when specifying an API Key.
-Only used when -Query is specified.
 
 ```yaml
 Type: Int32
@@ -120,8 +270,55 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 3
+Position: Named
 Default value: 100
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Strict
+Enable strict checking of filter parameters.
+By default, results will be returned when the the filter has been found or called from anywhere within the requested URL.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ReturnAll
+Return all results for your search.
+This could take an excessively long time and eat away at your API allowance, so use with caution.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Silent
+The -Silent parameter is used to silence the Write-Host messages returned during scans.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -137,7 +334,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 4
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -145,7 +342,6 @@ Accept wildcard characters: False
 
 ### -RateLimitPause
 The -RateLimitPause parameter is used to define the minimum percentage that can be reached of the allowable rate limit before queries are paused.
-Only used when -Query is specified.
 
 ```yaml
 Type: Int32
@@ -153,7 +349,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 5
+Position: Named
 Default value: 5
 Accept pipeline input: False
 Accept wildcard characters: False
