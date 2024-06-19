@@ -13,7 +13,7 @@ This function enables you to retrieve submitted scans from URLScan.io
 ## SYNTAX
 
 ```
-Get-URLScan -UUID <Object> [-Return <String>] [-ReturnType <String>] [<CommonParameters>]
+Get-URLScan -UUID <Object> [-Return <String>] [-ReturnType <String>] [-APIKey <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -122,6 +122,23 @@ Aliases:
 Required: False
 Position: Named
 Default value: Object
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -APIKey
+The -APIKey parameter enables you to specify an API Key if you have an account with URLScan.io.
+This will enable higher query limits and larger page sizes.
+This is only necessary if your API Key has not been saved using Set-URLScanConfiguration
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

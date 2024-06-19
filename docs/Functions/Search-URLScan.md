@@ -14,14 +14,14 @@ This function is used to perform a search query against URLScan.io
 
 ### Query
 ```
-Search-URLScan -Query <String> [-Limit <Int32>] [-PageSize <Int32>] [-Strict] [-ReturnAll] [-Silent]
- [-APIKey <String>] [-RateLimitPause <Int32>] [<CommonParameters>]
+Search-URLScan -Query <String> [-Limit <Int32>] [-PageSize <Int32>] [-ReturnAll] [-Silent] [-APIKey <String>]
+ [-RateLimitPause <Int32>] [<CommonParameters>]
 ```
 
 ### Filters
 ```
 Search-URLScan [-Domain <String>] [-IP <String>] [-Country <String>] [-Server <String>] [-Hash <String>]
- [-Filename <String>] [-ASN <String>] [-ASNName <String>] [-Limit <Int32>] [-PageSize <Int32>] [-Strict]
+ [-Filename <String>] [-ASN <String>] [-ASNName <String>] [-Strict] [-Limit <Int32>] [-PageSize <Int32>]
  [-ReturnAll] [-Silent] [-APIKey <String>] [-RateLimitPause <Int32>] [<CommonParameters>]
 ```
 
@@ -233,6 +233,22 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -Strict
+Enable strict checking of filter parameters.
+By default, results will be returned when the the filter has been found or called from anywhere within the requested URL.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: Filters
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -Limit
 The quantity of results you want to return.
 
@@ -261,22 +277,6 @@ Aliases:
 Required: False
 Position: Named
 Default value: 100
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Strict
-Enable strict checking of filter parameters.
-By default, results will be returned when the the filter has been found or called from anywhere within the requested URL.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
