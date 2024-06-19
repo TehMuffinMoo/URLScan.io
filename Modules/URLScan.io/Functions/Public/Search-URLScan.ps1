@@ -153,11 +153,13 @@ function Search-URLScan {
         [String]$ASNName,
         [Parameter(ParameterSetName='ReturnLimit-Filters')]
         [Parameter(ParameterSetName='ReturnLimit-Query')]
+        [Parameter(ParameterSetName='ReturnLimit')]
         [Int]$Limit = 100,
         [Int]$PageSize = 100,
         [Switch]$Strict,
         [Parameter(ParameterSetName='ReturnAll-Filters')]
         [Parameter(ParameterSetName='ReturnAll-Query')]
+        [Parameter(ParameterSetName='ReturnAll')]
         [Switch]$ReturnAll,
         [Switch]$Silent,
         [String]$APIKey,

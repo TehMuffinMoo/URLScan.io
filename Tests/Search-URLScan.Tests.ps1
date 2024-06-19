@@ -8,4 +8,7 @@ Describe 'Search-URLScan' {
     It 'Query Domain with paging' {
         (Search-URLScan -Query 'domain:google.com' -Size 300 -PageSize 100).count | Should -Be 300
     }
+    It 'Query Domain with -ReturnAll parameter' {
+        (Search-URLScan -Query 'domain:ns1.google.com' -ReturnAll).count | Should -BeGreaterOrEqual 1
+    }
 }
