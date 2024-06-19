@@ -15,10 +15,6 @@ function Get-URLScanScreenshot {
     .PARAMETER Open
         Use the -Open parameter to display the screenshot(s) in the default photo viewer once saved. These are opened individually, so it is strongly recommended to only use this if viewing a few images at one time.
 
-    .PARAMETER APIKey
-        The -APIKey parameter enables you to specify an API Key if you have an account with URLScan.io. This will enable higher query limits and larger page sizes.
-        This is only necessary if your API Key has not been saved using Set-URLScanConfiguration
-
     .EXAMPLE
         Search-URLScan -Query 'page.domain:(/.*tiktok.*/ AND NOT tiktok.com AND NOT www.tiktok.com AND NOT shop.tiktok.com)' -Limit 5 | Get-URLScanScreenshot -Path '/User/Me/URLScan.io Images'
 
@@ -40,18 +36,15 @@ function Get-URLScanScreenshot {
         [ValidatePattern('^\w{8}\-\w{4}\-\w{4}\-\w{4}\-\w{12}$')]
         [Alias('id','_id')]
         $UUID,
-        [String]$Path = "$((Get-Location).path)",
+        [String]$Path = $(if ($ENV:URLScanScreenshotPath) { $ENV:URLScanScreenshotPath } else { "$((Get-Location).path)" }),
         [Switch]$Open
     )
-    begin {
-        $Headers = Get-URLScanHeaders -APIKey $($APIKey)
-    }
 
     process {
         if (Test-Path $Path -PathType Container) {
             try {
                 $PNGPath = "$($Path)/$($UUID).png"
-                Invoke-WebRequest -Method GET -Uri "https://urlscan.io/screenshots/$($UUID).png" -Headers $Headers -OutFile $PNGPath
+                Invoke-WebRequest -Method GET -Uri "https://urlscan.io/screenshots/$($UUID).png" -OutFile $PNGPath
                 if (Test-Path $PNGPath -PathType Leaf) {
                     Write-Host "Saved Screenshot: `"$($UUID).png`" to: `"$($Path)`"" -ForegroundColor Green
                     if ($Open) {

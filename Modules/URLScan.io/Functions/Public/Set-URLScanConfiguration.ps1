@@ -12,6 +12,9 @@ function Set-URLScanConfiguration {
     .PARAMETER DefaultPageLimit
         Optionally set the default page size to be returned when performing queries to URLScan.io. This is set to 100 by default, which aligns with the Free Tier. If you have an account or subscription with URLScan.io, you can specify this value in line with your account limits.
 
+    .PARAMETER ScreenshotPath
+        Optionally configure a default screenshot path for when using Get-URLScanScreenshot & Get-URLScanLiveshot functions.
+
     .PARAMETER Persist
         Setting the -Persist parameter will save the configuration permanently for your user on this device. Without using this switch, the settings will only be saved for the duration of the PowerShell session.
 
@@ -29,6 +32,7 @@ function Set-URLScanConfiguration {
   param (
     [String]$APIKey,
     [String]$DefaultPageLimit,
+    [String]$ScreenshotPath,
     [Switch]$Persist
   )
 
@@ -78,6 +82,34 @@ function Set-URLScanConfiguration {
         $ENV:URLScanPageLimit = $DefaultPageLimit
         Write-Host "URLScan.io default page limit has been set to: $($DefaultPageLimit) for this session." -ForegroundColor Green
         Write-Host "You can make the change persistent for this user on this machine by using the -persist parameter." -ForegroundColor Gray
+    }
+  }
+
+  if ($ScreenshotPath) {
+    if (Test-Path $ScreenshotPath) {
+      $ScreenshotPathResolved = (Get-Item $ScreenshotPath).ResolvedTarget
+      if ($Persist) {
+        $Platform = Detect-OS
+        if ($Platform -eq "Windows") {
+          [System.Environment]::SetEnvironmentVariable('URLScanScreenshotPath',$ScreenshotPathResolved,[System.EnvironmentVariableTarget]::User)
+          $ENV:URLScanScreenshotPath = $ScreenshotPathResolved
+          Write-Host "URLScan.io default screenshot path has been set to: $($ScreenshotPathResolved) permanently for $($env:USERNAME) on $($env:COMPUTERNAME)." -ForegroundColor Green
+        } elseif ($Platform -eq "Mac" -or $Platform -eq "Unix") {
+          $ENV:URLScanScreenshotPath = $ScreenshotPathResolved
+          if (!(Test-Path ~/.zshenv)) {
+            touch ~/.zshenv
+          }
+          sed -i '' -e '/URLScanScreenshotPath/d' ~/.zshenv
+          echo "export URLScanScreenshotPath=$ScreenshotPathResolved" >> ~/.zshenv
+          Write-Host "URLScan.io default screenshot path has been set to: $($ScreenshotPathResolved) permanently for $env:USER on $(scutil --get LocalHostName)." -ForegroundColor Green
+        }
+      } else {
+          $ENV:URLScanScreenshotPath = $ScreenshotPathResolved
+          Write-Host "URLScan.io default screenshot path has been set to: $($ScreenshotPathResolved) for this session." -ForegroundColor Green
+          Write-Host "You can make the change persistent for this user on this machine by using the -persist parameter." -ForegroundColor Gray
+      }
+    } else {
+      Write-Error "Unable to find path: $($ScreenshotPathResolved)"
     }
   }
 }
