@@ -84,109 +84,114 @@ function Get-URLScan {
         [ValidateSet('Object','JSON')]
         [String]$ReturnType = 'Object'
     )
-    $Headers = Get-URLScanHeaders -APIKey $($APIKey)
-    $Results = Invoke-RestMethod -Method GET -Uri "https://urlscan.io/api/v1/result/$($UUID)/" -Headers $Headers
-    if ($Results) {
-        $Date = Get-Date
-        Switch($Return) {
-            'Links' {
-                $ResultArr = $Results.data.links | Select-Object href,text
-                break
-            }
-            'Hashes' {
-                $ReturnProperties = @{
-                    Property =  @{n="Type";e={$_.type}},
-                                @{n="Size";e={$_.size}},
-                                @{n="Hash";e={$_.hash}},
-                                @{n="Url";e={$_.response.url}}
+    begin {
+        $Headers = Get-URLScanHeaders -APIKey $($APIKey)
+    }
+
+    process {
+        $Results = Invoke-RestMethod -Method GET -Uri "https://urlscan.io/api/v1/result/$($UUID)/" -Headers $Headers
+        if ($Results) {
+            $Date = Get-Date
+            Switch($Return) {
+                'Links' {
+                    $ResultArr = $Results.data.links | Select-Object href,text
+                    break
                 }
-                $ResultArr = $Results.data.requests.response | Select-Object @ReturnProperties
-                break
-            }
-            'IPs' {
-                $ResultArr = $Results.lists.ips
-            }
-            'URLs' {
-                $ReturnProperties = @{
-                    Property =  @{n="URL";e={$_.url}},
-                                @{n="Status";e={$_.status}},
-                                @{n="MimeType";e={$_.mimeType}},
-                                @{n="Charset";e={$_.charset}},
-                                @{n="Remote IP";e={$_.remoteIPAddress}},
-                                @{n="Remote Port";e={$_.remotePort}}
+                'Hashes' {
+                    $ReturnProperties = @{
+                        Property =  @{n="Type";e={$_.type}},
+                                    @{n="Size";e={$_.size}},
+                                    @{n="Hash";e={$_.hash}},
+                                    @{n="Url";e={$_.response.url}}
+                    }
+                    $ResultArr = $Results.data.requests.response | Select-Object @ReturnProperties
+                    break
                 }
-                $ResultArr = $Results.data.requests.response.response | Select-Object @ReturnProperties
-                break
-            }
-            'Cookies' {
-                $ReturnProperties = @{
-                    Property =  @{n="Name";e={$_.name}},
-                                @{n="Domain";e={$_.domain}},
-                                @{n="Path";e={$_.path}},
-                                @{n="Size";e={$_.size}},
-                                @{n="HTTPOnly";e={$_.httpOnly}},
-                                @{n="Secure";e={$_.secure}},
-                                @{n="Session";e={$_.session}},
-                                @{n="Expires";e={($Date).AddSeconds($_.expires)}}
+                'IPs' {
+                    $ResultArr = $Results.lists.ips
                 }
-                $ResultArr = $Results.data.cookies | Select-Object @ReturnProperties
-                break
-            }
-            'Certificates' {
-                $ReturnProperties = @{
-                    Property =  @{n="Subject";e={$_.subjectName}},
-                                @{n="Issuer";e={$_.issuer}},
-                                @{n="ValidFrom";e={($Date).AddSeconds($_.validFrom)}},
-                                @{n="ValidTo";e={($Date).AddSeconds($_.validTo)}}
+                'URLs' {
+                    $ReturnProperties = @{
+                        Property =  @{n="URL";e={$_.url}},
+                                    @{n="Status";e={$_.status}},
+                                    @{n="MimeType";e={$_.mimeType}},
+                                    @{n="Charset";e={$_.charset}},
+                                    @{n="Remote IP";e={$_.remoteIPAddress}},
+                                    @{n="Remote Port";e={$_.remotePort}}
+                    }
+                    $ResultArr = $Results.data.requests.response.response | Select-Object @ReturnProperties
+                    break
                 }
-                $ResultArr = $Results.lists.certificates | Select-Object @ReturnProperties
-                break
-            }
-            'Verdicts' {
-                $ReturnProperties = @{
-                    Property =  @{n="UUID";e={$_.task.uuid}},
-                                @{n="Time";e={$_.task.time}},
-                                @{n="URL";e={$_.task.url}},
-                                @{n="OverallMalicious";e={$_.verdicts.overall.malicious}},
-                                @{n="OverallScore";e={$_.verdicts.overall.score}},
-                                @{n="OverallBrands";e={$($_.verdicts.overall.brands) -join ','}},
-                                @{n="OverallTags";e={$($_.verdicts.overall.tags + $_.verdicts.overall.categories) -join ','}},
-                                @{n="EnginesMalicious";e={$_.verdicts.engines.malicious}},
-                                @{n="EnginesScore";e={$_.verdicts.engines.score}},
-                                @{n="EnginesBrands";e={$($_.verdicts.engines.brands) -join ','}},
-                                @{n="EnginesTags";e={$($_.verdicts.engines.tags + $_.verdicts.engines.categories) -join ','}},
-                                @{n="URLScanMalicious";e={$_.verdicts.urlscan.malicious}},
-                                @{n="URLScanScore";e={$_.verdicts.urlscan.score}},
-                                @{n="URLScanBrands";e={$($_.verdicts.urlscan.brands) -join ','}},
-                                @{n="URLScanTags";e={$($_.verdicts.urlscan.tags + $_.verdicts.urlscan.categories) -join ','}},
-                                @{n="CommunityMalicious";e={$_.verdicts.community.malicious}},
-                                @{n="CommunityScore";e={$_.verdicts.community.score}},
-                                @{n="CommunityBrands";e={$($_.verdicts.community.brands) -join ','}},
-                                @{n="CommunityTags";e={$($_.verdicts.community.tags + $_.verdicts.community.categories) -join ','}}
+                'Cookies' {
+                    $ReturnProperties = @{
+                        Property =  @{n="Name";e={$_.name}},
+                                    @{n="Domain";e={$_.domain}},
+                                    @{n="Path";e={$_.path}},
+                                    @{n="Size";e={$_.size}},
+                                    @{n="HTTPOnly";e={$_.httpOnly}},
+                                    @{n="Secure";e={$_.secure}},
+                                    @{n="Session";e={$_.session}},
+                                    @{n="Expires";e={($Date).AddSeconds($_.expires)}}
+                    }
+                    $ResultArr = $Results.data.cookies | Select-Object @ReturnProperties
+                    break
                 }
-                $ResultArr = $Results | Select-Object @ReturnProperties
-                break
-            }
-            "Technologies" {
-                $ReturnProperties = @{
-                    Property =  @{n="App";e={$_.app}},
-                                @{n="Website";e={$_.website}},
-                                @{n="Categories";e={$_.categories.name -join ','}},
-                                @{n="Confidence";e={$_.confidenceTotal}}
+                'Certificates' {
+                    $ReturnProperties = @{
+                        Property =  @{n="Subject";e={$_.subjectName}},
+                                    @{n="Issuer";e={$_.issuer}},
+                                    @{n="ValidFrom";e={($Date).AddSeconds($_.validFrom)}},
+                                    @{n="ValidTo";e={($Date).AddSeconds($_.validTo)}}
+                    }
+                    $ResultArr = $Results.lists.certificates | Select-Object @ReturnProperties
+                    break
                 }
-                $ResultArr = $Results.meta.processors.wappa.data | Select-Object @ReturnProperties
-                break
+                'Verdicts' {
+                    $ReturnProperties = @{
+                        Property =  @{n="UUID";e={$_.task.uuid}},
+                                    @{n="Time";e={$_.task.time}},
+                                    @{n="URL";e={$_.task.url}},
+                                    @{n="OverallMalicious";e={$_.verdicts.overall.malicious}},
+                                    @{n="OverallScore";e={$_.verdicts.overall.score}},
+                                    @{n="OverallBrands";e={$($_.verdicts.overall.brands) -join ','}},
+                                    @{n="OverallTags";e={$($_.verdicts.overall.tags + $_.verdicts.overall.categories) -join ','}},
+                                    @{n="EnginesMalicious";e={$_.verdicts.engines.malicious}},
+                                    @{n="EnginesScore";e={$_.verdicts.engines.score}},
+                                    @{n="EnginesBrands";e={$($_.verdicts.engines.brands) -join ','}},
+                                    @{n="EnginesTags";e={$($_.verdicts.engines.tags + $_.verdicts.engines.categories) -join ','}},
+                                    @{n="URLScanMalicious";e={$_.verdicts.urlscan.malicious}},
+                                    @{n="URLScanScore";e={$_.verdicts.urlscan.score}},
+                                    @{n="URLScanBrands";e={$($_.verdicts.urlscan.brands) -join ','}},
+                                    @{n="URLScanTags";e={$($_.verdicts.urlscan.tags + $_.verdicts.urlscan.categories) -join ','}},
+                                    @{n="CommunityMalicious";e={$_.verdicts.community.malicious}},
+                                    @{n="CommunityScore";e={$_.verdicts.community.score}},
+                                    @{n="CommunityBrands";e={$($_.verdicts.community.brands) -join ','}},
+                                    @{n="CommunityTags";e={$($_.verdicts.community.tags + $_.verdicts.community.categories) -join ','}}
+                    }
+                    $ResultArr = $Results | Select-Object @ReturnProperties
+                    break
+                }
+                "Technologies" {
+                    $ReturnProperties = @{
+                        Property =  @{n="App";e={$_.app}},
+                                    @{n="Website";e={$_.website}},
+                                    @{n="Categories";e={$_.categories.name -join ','}},
+                                    @{n="Confidence";e={$_.confidenceTotal}}
+                    }
+                    $ResultArr = $Results.meta.processors.wappa.data | Select-Object @ReturnProperties
+                    break
+                }
+                default {
+                    $ResultArr = $Results
+                }
             }
-            default {
-                $ResultArr = $Results
-            }
-        }
-        Switch($ReturnType) {
-            'Object' {
-                return $ResultArr
-            }
-            'JSON' {
-                return $($ResultArr | ConvertTo-Json -Depth 10)
+            Switch($ReturnType) {
+                'Object' {
+                    return $ResultArr
+                }
+                'JSON' {
+                    return $($ResultArr | ConvertTo-Json -Depth 10)
+                }
             }
         }
     }
