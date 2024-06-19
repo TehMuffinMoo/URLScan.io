@@ -1,0 +1,2 @@
+- Add missing `-APIKey` parameter to `Get-URLScan`
+- Add new `Get-URLScanScreenshot` function for retrieiving screenshots from URLScan.io

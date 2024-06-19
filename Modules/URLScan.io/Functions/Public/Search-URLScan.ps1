@@ -131,9 +131,10 @@ function Search-URLScan {
         [String]$ASN,
         [Parameter(ParameterSetName='Filters')]
         [String]$ASNName,
+        [Parameter(ParameterSetName='Filters')]
+        [Switch]$Strict,
         [Int]$Limit,
         [Int]$PageSize = 100,
-        [Switch]$Strict,
         [Switch]$ReturnAll,
         [Switch]$Silent,
         [String]$APIKey,
@@ -325,6 +326,7 @@ function Search-URLScan {
                 break
             }
         }
+        Write-Host ""
         return $Results
     }
 }
