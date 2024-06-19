@@ -1,3 +1,8 @@
+## 1.0.1
+- Add `-Domain`, `-IP`, `-Country`, `-Server`, `-Hash`, `-FileName`, `-ASN`, `-ASNName`, `-Strict` & `-Silent` parameters to `Search-URLScan`
+- Add `-ReturnAll` parameter to `Search-URLScan` to return all related results via paging
+- Rename `-Size` parameter to `-Limit` to avoid overlapping parameter names when using pipeline
+
 ## 1.0.0.6
 - Fix minor bug with New-URLScan
 
@@ -22,6 +27,7 @@
 
 ## 1.0.0.0
 - Initial Publication
+
 
 
 
