@@ -124,48 +124,41 @@ function Search-URLScan {
         URLScan.io
     #>
     param(
-        [Parameter(ParameterSetName='ReturnLimit-Query',Mandatory=$true)]
-        [Parameter(ParameterSetName='ReturnAll-Query',Mandatory=$true)]
+        [Parameter(ParameterSetName='Query',Mandatory=$true)]
         [String]$Query,
-        [Parameter(ParameterSetName='ReturnLimit-Filters')]
-        [Parameter(ParameterSetName='ReturnAll-Filters')]
+        [Parameter(ParameterSetName='Filters')]
         [String]$Domain,
-        [Parameter(ParameterSetName='ReturnLimit-Filters')]
-        [Parameter(ParameterSetName='ReturnAll-Filters')]
+        [Parameter(ParameterSetName='Filters')]
         [String]$IP,
-        [Parameter(ParameterSetName='ReturnLimit-Filters')]
-        [Parameter(ParameterSetName='ReturnAll-Filters')]
+        [Parameter(ParameterSetName='Filters')]
         [String]$Country,
-        [Parameter(ParameterSetName='ReturnLimit-Filters')]
-        [Parameter(ParameterSetName='ReturnAll-Filters')]
+        [Parameter(ParameterSetName='Filters')]
         [String]$Server,
-        [Parameter(ParameterSetName='ReturnLimit-Filters')]
-        [Parameter(ParameterSetName='ReturnAll-Filters')]
+        [Parameter(ParameterSetName='Filters')]
         [String]$Hash,
-        [Parameter(ParameterSetName='ReturnLimit-Filters')]
-        [Parameter(ParameterSetName='ReturnAll-Filters')]
+        [Parameter(ParameterSetName='Filters')]
         [String]$Filename,
-        [Parameter(ParameterSetName='ReturnLimit-Filters')]
-        [Parameter(ParameterSetName='ReturnAll-Filters')]
+        [Parameter(ParameterSetName='Filters')]
         [String]$ASN,
-        [Parameter(ParameterSetName='ReturnLimit-Filters')]
-        [Parameter(ParameterSetName='ReturnAll-Filters')]
+        [Parameter(ParameterSetName='Filters')]
         [String]$ASNName,
-        [Parameter(ParameterSetName='ReturnLimit-Filters')]
-        [Parameter(ParameterSetName='ReturnLimit-Query')]
-        [Parameter(ParameterSetName='ReturnLimit')]
-        [Int]$Limit = 100,
+        [Int]$Limit,
         [Int]$PageSize = 100,
         [Switch]$Strict,
-        [Parameter(ParameterSetName='ReturnAll-Filters')]
-        [Parameter(ParameterSetName='ReturnAll-Query')]
-        [Parameter(ParameterSetName='ReturnAll')]
         [Switch]$ReturnAll,
         [Switch]$Silent,
         [String]$APIKey,
         [Int]$RateLimitPause = 5
     )
+
     begin {
+        if ($Limit -and $ReturnAll) {
+            Write-Error "-Limit & -ReturnAll are mutually exclusive parameters."
+            break
+        } elseif (!($Limit)) {
+            $Limit = 100
+        }
+
         $Headers = Get-URLScanHeaders -APIKey $($APIKey)
         
         ## Check if Default Page Size has been set
@@ -177,7 +170,7 @@ function Search-URLScan {
         if (($Limit -gt $PageSize) -or $ReturnAll) {
             $QuerySize = $PageSize
             if (!($ReturnAll)) {
-                if (!($Silent)) { Write-Host "Query Size Exceeds Page Size $($PageSize). Enabling paging of results.." }
+                if (!($Silent)) { Write-Host "Query Size Exceeds Page Size $($PageSize). Enabling paging of results.." -ForegroundColor Blue}
             }
         } else {
             $QuerySize = $Limit
@@ -322,15 +315,15 @@ function Search-URLScan {
                 ## Write Visible Count
                 if (!($ReturnAll)) {
                     if (($JSONResult.results.Count -lt $PageSize) -or ($JSONResult.results.Count -eq $Limit)) {
-                        if (!($Silent)) { Write-Host "($($Results.Count)/$($Results.Count)): URLScan.io Results Returned." -ForegroundColor Green }
+                        if (!($Silent)) { Write-Host -NoNewLine "`r($($Results.Count)/$($Results.Count)): URLScan.io Results Returned." -ForegroundColor Green }
                     } else {
-                        if (!($Silent)) { Write-Host "($($Results.Count)/$($Limit)): URLScan.io Results Returned.." -ForegroundColor Cyan }
+                        if (!($Silent)) { Write-Host -NoNewLine "`r($($Results.Count)/$($Limit)): URLScan.io Results Returned.." -ForegroundColor Cyan }
                     }
                 } else {
                     if ($JSONResult.results.Count -lt $PageSize) {
-                        if (!($Silent)) { Write-Host "($($Results.Count)/$($Results.Count)): All URLScan.io Results Returned." -ForegroundColor Green }
+                        if (!($Silent)) { Write-Host -NoNewLine "`r($($Results.Count)/$($Results.Count)): All URLScan.io Results Returned." -ForegroundColor Green }
                     } else {
-                        if (!($Silent)) { Write-Host "($($Results.Count)/??): URLScan.io Results Returned.." -ForegroundColor Cyan }
+                        if (!($Silent)) { Write-Host -NoNewLine "`r($($Results.Count)/??): URLScan.io Results Returned.." -ForegroundColor Cyan }
                     }
                 }
 
