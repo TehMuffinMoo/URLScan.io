@@ -97,6 +97,10 @@ function Get-URLScan {
                     $ReturnProperties = @{
                         Property =  @{n="Unique Countries";e={$_.stats.uniqCountries}},
                                     @{n="Total Links";e={$_.stats.totalLinks}},
+                                    @{n="Total Domains";e={$_.stats.domainStats.Count}},
+                                    @{n="Server Types";e={$_.stats.serverStats.Count}},
+                                    @{n="Total IPs";e={$_.stats.ipStats.Count}},
+                                    @{n="Total URLs";e={$_.data.requests.response.response.Count}},
                                     @{n="AdBlocked";e={$_.stats.adBlocked}},
                                     @{n="Malicious";e={$_.stats.malicious}},
                                     @{n="Secure Percentage";e={"$($_.stats.securePercentage)%"}}
