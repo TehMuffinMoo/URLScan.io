@@ -7,4 +7,11 @@ Describe 'Set-URLScanConfiguration' {
         Set-URLScanConfiguration -APIKey 'PesterTest'
         (Get-URLScanConfiguration -IncludeAPIKey).'API Key' | Should -Be 'PesterTest'
     }
+    It 'Set URLScan.io Screenshot Path Key' {
+        $PesterDir = New-Item -Type Directory -Name 'PesterTest' -Path ./
+        Set-URLScanConfiguration -ScreenshotPath $PesterDir.ResolvedTarget
+        $GetURLConfiguration = Get-URLScanConfiguration
+        Remove-Item -Path $PesterDir.ResolvedTarget -Force
+        $GetURLConfiguration.'Screenshot Path' | Should -Be $PesterDir.ResolvedTarget
+    }
 }
