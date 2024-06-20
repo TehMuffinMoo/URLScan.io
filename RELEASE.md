@@ -1,2 +1,3 @@
 - Return Saved Screenshot Path when using `Get-URLScanConfiguration`
 - Add additional Return Types to `Get-URLScan`
+- Enable pipeline support for `-URL` parameter using the `Get-URLScanLiveshot` function

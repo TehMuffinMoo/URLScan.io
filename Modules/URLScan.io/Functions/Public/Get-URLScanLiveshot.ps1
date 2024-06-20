@@ -36,7 +36,10 @@ function Get-URLScanLiveshot {
         URLScan.io
     #>
     param(
-        [Parameter(Mandatory=$true)]
+        [Parameter(
+            Mandatory = $true,
+            ValueFromPipelineByPropertyName = $true
+        )]
         [uri]$URL,
         [String]$Path = $(if ($ENV:URLScanScreenshotPath) { $ENV:URLScanScreenshotPath } else { "$((Get-Location).path)" }),
         [Int]$Height = 1080,
