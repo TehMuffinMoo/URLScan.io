@@ -12,6 +12,6 @@ Describe 'Set-URLScanConfiguration' {
         Set-URLScanConfiguration -ScreenshotPath $PesterDir.ResolvedTarget
         $GetURLConfiguration = Get-URLScanConfiguration
         Remove-Item -Path $PesterDir.ResolvedTarget -Force
-        $GetURLConfiguration.'Screenshot Path' | Should -Be $PesterDir.ResolvedTarget
+        $GetURLConfiguration.'Screenshot Path' | Should -Be $($PesterDir.ResolvedTarget)
     }
 }
