@@ -1,1 +1,2 @@
 - Return Saved Screenshot Path when using `Get-URLScanConfiguration`
+- Add additional Return Types to `Get-URLScan`

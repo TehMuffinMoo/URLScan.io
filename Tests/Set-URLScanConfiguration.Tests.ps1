@@ -7,8 +7,8 @@ Describe 'Set-URLScanConfiguration' {
         Set-URLScanConfiguration -APIKey 'PesterTest'
         (Get-URLScanConfiguration -IncludeAPIKey).'API Key' | Should -Be 'PesterTest'
     }
-    It 'Set URLScan.io Screenshot Path Key' {
-        $PesterDir = New-Item -Type Directory -Name 'PesterTest' -Path ./
+    It 'Set URLScan.io Screenshot Path' {
+        $PesterDir = New-Item -Type Directory -Name 'PesterTest' -Path ../
         Set-URLScanConfiguration -ScreenshotPath $PesterDir.ResolvedTarget
         $ScreenshotPath = $PesterDir.ResolvedTarget
         Remove-Item -Path $PesterDir.ResolvedTarget -Force

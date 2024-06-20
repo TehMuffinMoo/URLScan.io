@@ -111,14 +111,17 @@ function New-URLScan {
     $ScanSubmission = Invoke-RestMethod -Method POST -Uri "https://urlscan.io/api/v1/scan/" -Headers $Headers -Body $JSONPayload
 
     if ($WaitForScan) {
+        $StartTime = Get-Date
         while (!($Results)) {
-            Write-Host "Waiting for scan results.."
+            $Diff = $(Get-Date)-$StartTime
+            Write-Host -NoNewLine "`rWaiting for scan results.. ($($Diff.Seconds)s)"
             try {
                 $Results = $ScanSubmission | Get-URLScan
             } catch {
-                Wait-Event -Timeout 3
+                Wait-Event -Timeout 2
             }
         }
+        Write-Host -NoNewLine "`r                                            "
     } else {
         $Results = $ScanSubmission
     }
