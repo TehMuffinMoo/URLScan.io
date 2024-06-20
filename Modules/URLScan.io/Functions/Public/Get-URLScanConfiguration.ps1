@@ -12,9 +12,10 @@ function Get-URLScanConfiguration {
     .EXAMPLE
         PS> Get-URLScanConfiguration | fl
 
-        API Key   : ********
-        Page Size : 1000
-        Version   : 1.0.0.4
+        API Key         : ********
+        Page Size       : 1000
+        Version         : 1.0.0.4
+        Screenshot Path : /User/Me/URLScan.io-Images
 
     .FUNCTIONALITY
         ibPS
@@ -31,9 +32,10 @@ function Get-URLScanConfiguration {
   }
 
   $CurrentConfig = [PSCustomObject]@{
-    "API Key" = $(if ($ENV:URLScanAPIKey) { if ($IncludeAPIKey) {Get-URLScanAPIKey} else { "********" }} else {'API Key Not Set'})
+    "API Key" = $(if ($ENV:URLScanAPIKey) { if ($IncludeAPIKey) {Get-URLScanAPIKey} else { "********" }} else {'Not Set'})
     "Page Size" = $(if ($ENV:URLScanPageLimit) { $ENV:URLScanPageLimit } else { 100 })
     "Version" = $(if ($URLScanModule) { $URLScanModule.Version.ToString() })
+    "Screenshot Path" = $(if ($ENV:URLScanScreenshotPath) { $ENV:URLScanScreenshotPath } else {'Not Set'})
   }
   return $CurrentConfig
 }
