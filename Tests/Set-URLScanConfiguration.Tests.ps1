@@ -10,8 +10,8 @@ Describe 'Set-URLScanConfiguration' {
     It 'Set URLScan.io Screenshot Path Key' {
         $PesterDir = New-Item -Type Directory -Name 'PesterTest' -Path ./
         Set-URLScanConfiguration -ScreenshotPath $PesterDir.ResolvedTarget
-        $GetURLConfiguration = Get-URLScanConfiguration
+        $ScreenshotPath = $PesterDir.ResolvedTarget
         Remove-Item -Path $PesterDir.ResolvedTarget -Force
-        $GetURLConfiguration.'Screenshot Path' | Should -Be $($PesterDir.ResolvedTarget)
+        (Get-URLScanConfiguration).'Screenshot Path' | Should -Be $($ScreenshotPath)
     }
 }
