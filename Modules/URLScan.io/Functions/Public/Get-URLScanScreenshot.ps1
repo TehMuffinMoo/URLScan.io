@@ -53,7 +53,8 @@ function Get-URLScanScreenshot {
                     }
                 }
             } catch {
-                Write-Error $_.Exception.Message
+                Write-Error $_
+                break
             }
         } else {
             Write-Error "File Path $($Path) does not exist."

@@ -45,7 +45,12 @@ function Watch-URLScan {
         if ($ResultsCount -ge $BreakAfter) {
             break
         }
-        $Result = Invoke-RestMethod -Uri "https://urlscan.io/json/live/"
+        try {
+            $Result = Invoke-RestMethod -Uri "https://urlscan.io/json/live/"
+        } catch {
+            Write-Error $_
+            break
+        }
         $ReturnProperties = @{
             Property = @{n="id";e={$_.'_id'}},
                        @{n="time";e={$_.task.time}},

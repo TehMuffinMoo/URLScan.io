@@ -39,7 +39,12 @@ function Get-URLScanQuota {
         [String]$APIKey
     )
     $Headers = Get-URLScanHeaders -APIKey $($APIKey)
-    $Results = Invoke-RestMethod -Method GET -Uri "https://urlscan.io/user/quotas/" -Headers $Headers | Select-Object -ExpandProperty limits
+    try {
+        $Results = Invoke-RestMethod -Method GET -Uri "https://urlscan.io/user/quotas/" -Headers $Headers | Select-Object -ExpandProperty limits
+    } catch {
+        Write-Error $_
+        break
+    }
 
     if ($Results) {
         if ($Summary) {

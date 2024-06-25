@@ -108,7 +108,12 @@ function New-URLScan {
         $Splat.'overrideSafety' = $true
     }
     $JSONPayload = $Splat | ConvertTo-Json -Depth 2 -Compress
-    $ScanSubmission = Invoke-RestMethod -Method POST -Uri "https://urlscan.io/api/v1/scan/" -Headers $Headers -Body $JSONPayload
+    try {
+        $ScanSubmission = Invoke-RestMethod -Method POST -Uri "https://urlscan.io/api/v1/scan/" -Headers $Headers -Body $JSONPayload
+    } catch {
+        Write-Error $_
+        break
+    }
 
     if ($WaitForScan) {
         $StartTime = Get-Date

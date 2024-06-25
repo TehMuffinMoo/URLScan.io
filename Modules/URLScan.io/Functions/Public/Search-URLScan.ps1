@@ -282,7 +282,12 @@ function Search-URLScan {
                 }
             }
 
-            $Result = Invoke-WebRequest -Method GET -Uri "https://urlscan.io/api/v1/search/?q=$($Query)&size=$($QuerySize)$($SearchAfter)" -Headers $Headers
+            try {
+                $Result = Invoke-WebRequest -Method GET -Uri "https://urlscan.io/api/v1/search/?q=$($Query)&size=$($QuerySize)$($SearchAfter)" -Headers $Headers
+            } catch {
+                Write-Error $_
+                break
+            }
             
             $JSONResult = $Result.Content | ConvertFrom-Json
 
