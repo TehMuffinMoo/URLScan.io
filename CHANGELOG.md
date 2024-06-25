@@ -1,3 +1,8 @@
+## 1.0.3
+- Return Saved Screenshot Path when using `Get-URLScanConfiguration`
+- Add additional Return Types to `Get-URLScan`
+- Enable pipeline support for `-URL` parameter using the `Get-URLScanLiveshot` function
+
 ## 1.0.2
 - Add missing `-APIKey` parameter to `Get-URLScan`
 - Add new `Get-URLScanScreenshot` function for retrieiving screenshots from URLScan.io
@@ -33,6 +38,7 @@
 
 ## 1.0.0.0
 - Initial Publication
+
 
 
 

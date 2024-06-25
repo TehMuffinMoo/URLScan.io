@@ -25,9 +25,10 @@ This function is used to get the current configuration for the URLScan.io Module
 ```powershell
 Get-URLScanConfiguration | fl
 
-API Key   : ********
-Page Size : 1000
-Version   : 1.0.0.4
+API Key         : ********
+Page Size       : 1000
+Version         : 1.0.0.4
+Screenshot Path : /User/Me/URLScan.io-Images
 ```
 
 ## PARAMETERS
