@@ -160,7 +160,7 @@ do {
         if (!($Branch)) {
             $Branch = "main"
         }
-        if (Get-Command Get-URLScanConfiguration) {
+        if (Get-Module URLScan.io -ListAvailable) {
             Write-Host "Found existing version, removing.." -ForegroundColor Yellow
             (Get-Module URLScan.io -ListAvailable).moduleBase | Remove-Item -Recurse -Force
         }
