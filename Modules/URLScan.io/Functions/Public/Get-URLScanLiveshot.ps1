@@ -54,7 +54,12 @@ function Get-URLScanLiveshot {
         if (Test-Path $Path -PathType Container) {
             try {
                 $PNGPath = "$($Path)/$($URL.Authority).png"
-                Invoke-WebRequest -Method GET -Uri "https://urlscan.io/liveshot/?height=$($Height)&width=$($Width)&url=$($URL.OriginalString)" -OutFile $PNGPath
+                try {
+                    Invoke-WebRequest -Method GET -Uri "https://urlscan.io/liveshot/?height=$($Height)&width=$($Width)&url=$($URL.OriginalString)" -OutFile $PNGPath
+                } catch {
+                    Write-Error $_
+                    break
+                }
                 if (Test-Path $PNGPath -PathType Leaf) {
                     Write-Host "Saved Screenshot: `"$($URL.Authority).png`" to: `"$($Path)`"" -ForegroundColor Green
                     if ($Open) {

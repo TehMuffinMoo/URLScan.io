@@ -89,7 +89,12 @@ function Get-URLScan {
     }
 
     process {
-        $Results = Invoke-RestMethod -Method GET -Uri "https://urlscan.io/api/v1/result/$($UUID)/" -Headers $Headers
+        try {
+            $Results = Invoke-RestMethod -Method GET -Uri "https://urlscan.io/api/v1/result/$($UUID)/" -Headers $Headers
+        } catch {
+            Write-Error $_
+            break
+        }
         if ($Results) {
             $Date = Get-Date
             Switch($Return) {
