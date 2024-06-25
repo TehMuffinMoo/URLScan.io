@@ -43,7 +43,7 @@ function Get-URLScanScreenshot {
     process {
         if (Test-Path $Path -PathType Container) {
             try {
-                $PNGPath = "$($Path)/$($UUID).png"
+                $PNGPath = Join-Path $($Path) "$($UUID).png"
                 Invoke-WebRequest -Method GET -Uri "https://urlscan.io/screenshots/$($UUID).png" -OutFile $PNGPath
                 if (Test-Path $PNGPath -PathType Leaf) {
                     Write-Host "Saved Screenshot: `"$($UUID).png`" to: `"$($Path)`"" -ForegroundColor Green

@@ -52,9 +52,9 @@ function Get-URLScanQuota {
             @('private','public','retrieve','search','unlisted','livescan') | %{
                 $SummaryData = [PSCustomObject]@{
                     'Scope' = $_
-                    'Minute' = "($($Results."$($_)".minute.used)/$($Results."$($_)".minute.limit)) $($Results."$($_)".minute.percent)%"
-                    'Hour' = "($($Results."$($_)".hour.used)/$($Results."$($_)".hour.limit)) $($Results."$($_)".hour.percent)%"
-                    'Day' = "($($Results."$($_)".day.used)/$($Results."$($_)".day.limit)) $($Results."$($_)".day.percent)%"
+                    'Minute' = "$([String]("($($Results."$($_)".minute.used)/$($Results."$($_)".minute.limit))").PadRight(8)) $($Results."$($_)".minute.percent)%"
+                    'Hour' = "$([String]("($($Results."$($_)".hour.used)/$($Results."$($_)".hour.limit))").PadRight(8)) $($Results."$($_)".hour.percent)%"
+                    'Day' = "$([String]("($($Results."$($_)".day.used)/$($Results."$($_)".day.limit))").PadRight(9)) $($Results."$($_)".day.percent)%"
                 }
                 $SummaryResults += $SummaryData
             }
