@@ -17,7 +17,7 @@ function Detect-OS {
 
 function Get-URLScanHeaders {
   param (
-    $APIKey
+    [String]$APIKey
   )
   $Headers = @{
     "Content-Type" = "application/json"

@@ -73,13 +73,12 @@ function Get-URLScan {
     param(
         [Parameter(
             Mandatory=$true,
-            ParameterSetName='Result',
             ValueFromPipelineByPropertyName = $true
         )]
         [ValidatePattern('^\w{8}\-\w{4}\-\w{4}\-\w{4}\-\w{12}$')]
         [Alias('id','_id')]
         $UUID,
-        [ValidateSet('Links','Hashes','IPs','URLs','Cookies','Certificates','Verdicts','Technologies')]
+        [ValidateSet('Summary','Domains','Servers','Links','Page','Requests','Hashes','IPs','URLs','Countries','Cookies','Certificates','Verdicts','Technologies','TLS','GeoIP','PTR','ASNs','Wappalyzer','Umbrella')]
         [String]$Return,
         [ValidateSet('Object','JSON')]
         [String]$ReturnType = 'Object',
@@ -94,8 +93,49 @@ function Get-URLScan {
         if ($Results) {
             $Date = Get-Date
             Switch($Return) {
+                'Summary' {
+                    $ReturnProperties = @{
+                        Property =  @{n="Unique Countries";e={$_.stats.uniqCountries}},
+                                    @{n="Total Links";e={$_.stats.totalLinks}},
+                                    @{n="Total Domains";e={$_.stats.domainStats.Count}},
+                                    @{n="Server Types";e={$_.stats.serverStats.Count}},
+                                    @{n="Total IPs";e={$_.stats.ipStats.Count}},
+                                    @{n="Total URLs";e={$_.data.requests.response.response.Count}},
+                                    @{n="AdBlocked";e={$_.stats.adBlocked}},
+                                    @{n="Malicious";e={$_.stats.malicious}},
+                                    @{n="Secure Percentage";e={"$($_.stats.securePercentage)%"}}
+                    }
+                    $ResultArr = $Results | Select-Object @ReturnProperties
+                    break
+                }
+                'Domains' {
+                    $ResultArr = $Results.stats.domainStats
+                    break
+                }
+                'Servers' {
+                    $ResultArr = $Results.stats.serverStats
+                    break
+                }
                 'Links' {
                     $ResultArr = $Results.data.links | Select-Object href,text
+                    break
+                }
+                'Page' {
+                    $ResultArr = $Results.page
+                    break
+                }
+                'Requests' {
+                    $ReturnProperties = @{
+                        Property =  @{n="RequestURL";e={$_.request.url}},
+                                    @{n="Method";e={$_.request.method}},
+                                    @{n="Headers";e={$_.request.headers}},
+                                    @{n="MixedContentType";e={$_.request.mixedContentType}},
+                                    @{n="InitialPriority";e={$_.request.initialPriority}},
+                                    @{n="ReferrerPolicy";e={$_.request.referrerPolicy}},
+                                    @{n="IsSameSite";e={$_.request.isSameSite}},
+                                    @{n="DocumentURL";e={$_.documentURL}}
+                    }
+                    $ResultArr = $Results.data.requests.request | Select-Object @ReturnProperties
                     break
                 }
                 'Hashes' {
@@ -109,7 +149,8 @@ function Get-URLScan {
                     break
                 }
                 'IPs' {
-                    $ResultArr = $Results.lists.ips
+                    $ResultArr = $Results.stats.ipStats
+                    break
                 }
                 'URLs' {
                     $ReturnProperties = @{
@@ -121,6 +162,10 @@ function Get-URLScan {
                                     @{n="Remote Port";e={$_.remotePort}}
                     }
                     $ResultArr = $Results.data.requests.response.response | Select-Object @ReturnProperties
+                    break
+                }
+                'Countries' {
+                    $ResultArr = $Results.lists | Select-Object countries
                     break
                 }
                 'Cookies' {
@@ -172,7 +217,7 @@ function Get-URLScan {
                     $ResultArr = $Results | Select-Object @ReturnProperties
                     break
                 }
-                "Technologies" {
+                'Technologies' {
                     $ReturnProperties = @{
                         Property =  @{n="App";e={$_.app}},
                                     @{n="Website";e={$_.website}},
@@ -180,6 +225,38 @@ function Get-URLScan {
                                     @{n="Confidence";e={$_.confidenceTotal}}
                     }
                     $ResultArr = $Results.meta.processors.wappa.data | Select-Object @ReturnProperties
+                    break
+                }
+                'TLS' {
+                    $ResultArr = $Results.stats.tlsStats
+                    break
+                }
+                'GeoIP' {
+                    $ReturnProperties = @{
+                        Property =  @{n="IP";e={$_.ip}},
+                                    @{n="Country";e={$_.geoip.country}},
+                                    @{n="City";e={$_.geoip.city}},
+                                    @{n="LonLat";e={$_.geoip.ll}},
+                                    @{n="Region";e={$_.geoip.region}},
+                                    @{n="Timezone";e={$_.geoip.timezone}}
+                    }
+                    $ResultArr = $Results.meta.processors.geoip.data | Select-Object @ReturnProperties
+                    break
+                }
+                'PTR' {
+                    $ResultArr = $Results.meta.processors.rdns.data
+                    break
+                }
+                'ASNs' {
+                    $ResultArr = $Results.meta.processors.asn.data
+                    break
+                }
+                'Wappalyzer' {
+                    $ResultArr = $Results.meta.processors.wappa.data
+                    break
+                }
+                'Umbrella' {
+                    $ResultArr = $Results.meta.processors.umbrella.data
                     break
                 }
                 default {

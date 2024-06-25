@@ -35,7 +35,7 @@ This module enables you to Search, Scan & Retrieve Results or Screenshots from t
 ## How To Use
 The easiest option to install the URLScan.io Module is to use the PowerShell Gallery.
 
-Once installed, you can set your API Key using [`Set-URLConfiguration`](https://psurlscanio.readthedocs.io/en/latest/Functions/Set-URLScanConfiguration/)
+Once installed, you can set your API Key using [`Set-URLScanConfiguration`](https://psurlscanio.readthedocs.io/en/latest/Functions/Set-URLScanConfiguration/)
 
 ### Installing URLScan.io Module
 You can either load the module directly, or Install it as a PowerShell Module.
@@ -51,7 +51,7 @@ Install-Module -Name URLScan.io -Scope CurrentUser
 
 #### Import Module
 ```powershell
-Import-Module ./Modules/URLScan.io/URLScanIO.psm1
+Import-Module ./Modules/URLScan.io/URLScan.io.psm1
 ```
 
 ### Documentation

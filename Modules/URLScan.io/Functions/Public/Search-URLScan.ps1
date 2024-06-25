@@ -123,7 +123,10 @@ function Search-URLScan {
         [String]$Country,
         [Parameter(ParameterSetName='Filters')]
         [String]$Server,
-        [Parameter(ParameterSetName='Filters')]
+        [Parameter(
+            ParameterSetName='Filters',
+            ValueFromPipelineByPropertyName = $true
+        )]
         [String]$Hash,
         [Parameter(ParameterSetName='Filters')]
         [String]$Filename,
@@ -150,7 +153,7 @@ function Search-URLScan {
         }
 
         $Headers = Get-URLScanHeaders -APIKey $($APIKey)
-        
+
         ## Check if Default Page Size has been set
         if ($ENV:URLScanPageLimit) {
             $PageSize = $ENV:URLScanPageLimit
@@ -168,7 +171,6 @@ function Search-URLScan {
     }
 
     process {
-
         ## Initilize Result Count and Results Array
         $ResultCount = 0
         $Results = @()
@@ -281,7 +283,7 @@ function Search-URLScan {
             }
 
             $Result = Invoke-WebRequest -Method GET -Uri "https://urlscan.io/api/v1/search/?q=$($Query)&size=$($QuerySize)$($SearchAfter)" -Headers $Headers
-
+            
             $JSONResult = $Result.Content | ConvertFrom-Json
 
             ## Check if Result Count is less than requested page size, and additionally if the Result Count is not equal to the requested number of results.

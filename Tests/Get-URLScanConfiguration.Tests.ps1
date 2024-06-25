@@ -7,6 +7,9 @@ Describe 'Get-URLScanConfiguration' {
         (Get-URLScanConfiguration).'Page Size' | Should -Be 100
     }
     It 'Get URLScan.io API Key' {
-        (Get-URLScanConfiguration).'API Key' | Should -Be 'API Key Not Set'
+        (Get-URLScanConfiguration).'API Key' | Should -Be 'Not Set'
+    }
+    It 'Get URLScan.io Screenshot Path' {
+        (Get-URLScanConfiguration).'Screenshot Path' | Should -Be 'Not Set'
     }
 }
