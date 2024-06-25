@@ -23,13 +23,39 @@ This function returns details about the user associated with the current API Key
 
 ### EXAMPLE 1
 ```powershell
+Get-URLScanUser
 
+createdAt     : 2/18/2023 4:56:36 AM
+firstname     : Me
+fullName      : Me Foo
+lastname      : Foo
+submissions   : @{total=328; private=74; unlisted=0; public=254; api=326; manual=2; lastSubmission=6/25/2024 10:57:58 AM}
+email         : me@foo.com
+title         : Solutions Architect
+isPro         : False
+activeTeam    : @{firstname=Me}
+limits        : @{private=; public=; retrieve=; search=; unlisted=; livescan=; liveshot=; maxRetentionPeriodDays=7; maxSearchRangeMonths=3; maxSearchResults=1000; products=System.Object[]; features=System.Object[]; queryableFields=System.Object[]; queryVisibility=System.Object[]}
+preferences   : @{defaultVisibility=private; enforceVisibility=False}
+maxVisibility : public
+```
+
+### EXAMPLE 2
+```powershell
+Get-URLScanUser -Submissions
+
+Total           : 324
+Public          : 251
+Private         : 73
+Unlisted        : 0
+API             : 
+Manual          : 2
+Last Submission : 6/25/2024 10:39:30 AM
 ```
 
 ## PARAMETERS
 
 ### -Submissions
-{{ Fill Submissions Description }}
+Return the submission statistics for the current user
 
 ```yaml
 Type: SwitchParameter
