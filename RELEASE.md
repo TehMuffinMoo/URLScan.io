@@ -1,3 +1,2 @@
-- Return Saved Screenshot Path when using `Get-URLScanConfiguration`
-- Add additional Return Types to `Get-URLScan`
-- Enable pipeline support for `-URL` parameter using the `Get-URLScanLiveshot` function
+- Add additional error checking & formatting
+- Add `Install.ps1` for installing directly from source
