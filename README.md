@@ -49,6 +49,17 @@ Install-Module -Name URLScan.io -Scope AllUsers
 Install-Module -Name URLScan.io -Scope CurrentUser
 ```
 
+#### Installing from Github
+You can install from source directly from Github using the command below.
+```powershell
+iex "& {$(irm https://raw.githubusercontent.com/TehMuffinMoo/URLScan.io/main/Install.ps1)} s"
+```
+
+You can optionally also append the branch name at the end, as shown below
+```powershell
+iex "& {$(irm https://raw.githubusercontent.com/TehMuffinMoo/URLScan.io/main/Install.ps1)} s dev"
+```
+
 #### Import Module
 ```powershell
 Import-Module ./Modules/URLScan.io/URLScan.io.psm1
