@@ -1,6 +1,6 @@
 {
   "Name": "URLScan.io",
-  "Version": "1.0.1",
+  "Version": "1.0.3",
   "Description": "URLScan.io PowerShell Module",
   "Author": "Mat Cox",
   "ProjectUri": "https://github.com/TehMuffinMoo/URLScan.io",

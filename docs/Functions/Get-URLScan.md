@@ -13,7 +13,8 @@ This function enables you to retrieve submitted scans from URLScan.io
 ## SYNTAX
 
 ```
-Get-URLScan -UUID <Object> [-Return <String>] [-ReturnType <String>] [-APIKey <String>] [<CommonParameters>]
+Get-URLScan [-UUID] <Object> [[-Return] <String>] [[-ReturnType] <String>] [[-APIKey] <String>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -87,7 +88,7 @@ Parameter Sets: (All)
 Aliases: id, _id
 
 Required: True
-Position: Named
+Position: 1
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -104,7 +105,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -120,7 +121,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 3
 Default value: Object
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -137,7 +138,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 4
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
