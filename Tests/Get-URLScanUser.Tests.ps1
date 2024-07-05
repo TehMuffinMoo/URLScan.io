@@ -18,7 +18,7 @@ Describe 'Get-URLScanUser' {
             'maxVisibility'
         )
 
-        $User = Get-URLScanUser
+        $User = Get-URLScanUser -APIKey $ENV:URLSCAN_IO
         $CheckObjects | %{
             if ($_ -notin $User.PSObject.Properties.Name) {
                 $Failed = $true
