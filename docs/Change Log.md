@@ -1,3 +1,9 @@
+## 1.0.5
+- Add additional error checking & formatting
+- Add `Install.ps1` for installing directly from source
+- Add `Get-URLScanUser` function for retrieving details about the current user
+- Add `Get-URLScanDOM` function for retrieving HTML DOM webpage content from scans
+
 ## 1.0.4
 - Add additional error checking & formatting
 - Add `Install.ps1` for installing directly from source
@@ -44,6 +50,7 @@
 
 ## 1.0.0.0
 - Initial Publication
+
 
 
 
