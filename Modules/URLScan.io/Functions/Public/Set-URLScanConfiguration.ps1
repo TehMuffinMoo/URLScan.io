@@ -29,6 +29,7 @@ function Set-URLScanConfiguration {
     .FUNCTIONALITY
         URLScan.io
     #>
+  [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingConvertToSecureStringWithPlainText', '', Justification='Required to obtain API Key')]
   param (
     [String]$APIKey,
     [String]$DefaultPageLimit,
